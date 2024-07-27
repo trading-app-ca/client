@@ -4,11 +4,22 @@ header {
     align-items: center;
     padding: 20px;
     color: white;
+    max-width: 100dvw;
 
-    nav {
-        
-        ul {
+    .dropdown-menu-icon {
+        color: #66FCF1;
+        cursor: pointer;
+    }
 
+    .logo {
+        padding: 0;
+        margin: 0;
+    }
+
+    .desktop-nav {
+        display: none;  
+
+        .desktop-links {
             li {
                 list-style: none;
 
@@ -19,5 +30,22 @@ header {
             }
         }
     }
+
+    .auth-buttons {
+        display: none;  // This hides the desktop auth buttons on mobile
+    }
 }
 
+@media (min-width: 768px) {
+    nav {
+        display: flex;
+    }
+
+    .auth-buttons {
+        display: flex;
+    }
+
+    .dropdown-menu-icon {
+        display: none;  // Hide the hamburger menu icon on desktop
+    }
+}
