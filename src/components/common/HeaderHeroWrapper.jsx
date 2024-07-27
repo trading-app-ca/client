@@ -6,8 +6,10 @@ import MainBackground from './MainBackground';
 const HeaderHeroWrapper = () => {
 	return (
 		<MainBackground>
-			<Header />
-			<HeroSection />
+			 <div className="header-hero-wrapper">
+				<Header />
+				<HeroSection />
+			</div>
 		</MainBackground>
 	);
 };
