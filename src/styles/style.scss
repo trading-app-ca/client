@@ -1,12 +1,15 @@
 // All styles are imported here and then this file is imported in App.js
 
 @import './utils/variables.scss';
-@import './base/base.scss';
-@import './components/Buttons.scss';
-@import './base/MainBackground.scss';
 
-@import './layout/Header.scss';
+@import './base/base.scss';
+
+@import './components/common/buttons.scss';
+@import './components/common/MainBackground.scss';
+
+@import './components/Header/Header.scss';
+@import './components/Header/MobileDropdown.scss';
+
 @import './layout/Footer.scss';
-@import './components/MobileDropdown.scss';
 
 @import './components/HomePage/HeroSection.scss'
