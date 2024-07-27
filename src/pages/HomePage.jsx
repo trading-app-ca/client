@@ -1,5 +1,5 @@
 import React from 'react';
-import HeroSection from '../components/Homepage/HeroSection';
+import HeaderHeroWrapper from '../components/common/HeaderHeroWrapper';
 import FeatureCardSection from '../components/Homepage/FeatureCardSection';
 import AboutSection from '../components/Homepage/AboutSection';
 import HowItWorksSection from '../components/Homepage/HowItWorksSection';
@@ -8,16 +8,16 @@ import CallToActionSection from '../components/Homepage/CallToActionSection';
 
 
 const HomePage = () => {
-  return (
-    <div className='homepage'>
-      <HeroSection />
-      <FeatureCardSection />
-      <AboutSection />
-      <HowItWorksSection />
-      <TestimonialsSection />
-      <CallToActionSection />
-    </div>
-  );
+	return (
+		<div className="homepage">
+			<HeaderHeroWrapper />
+			<FeatureCardSection />
+			<AboutSection />
+			<HowItWorksSection />
+			<TestimonialsSection />
+			<CallToActionSection />
+		</div>
+	);
 };
 
 export default HomePage;

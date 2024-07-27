@@ -1,1 +1,9 @@
+// All styles are imported here and then this file is imported in App.js
+
+@import './base/base.scss';
+@import './base/MainBackground.scss';
+
 @import './layout/Header.scss';
+@import './layout/Footer.scss';
+
+@import './components/HomePage/HeroSection.scss'
