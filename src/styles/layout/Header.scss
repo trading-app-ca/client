@@ -19,7 +19,7 @@ header {
     .desktop-nav {
         display: none;  
 
-        .desktop-links {
+        ul {
             li {
                 list-style: none;
 
@@ -32,20 +32,56 @@ header {
     }
 
     .auth-buttons {
-        display: none;  // This hides the desktop auth buttons on mobile
+        display: none; 
     }
 }
 
 @media (min-width: 768px) {
-    nav {
-        display: flex;
-    }
 
-    .auth-buttons {
-        display: flex;
-    }
+    header {
+        justify-content: space-between;
+        max-width: 1400px;
+        margin: auto;
 
-    .dropdown-menu-icon {
-        display: none;  // Hide the hamburger menu icon on desktop
+        .desktop-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            ul {
+                display: flex;
+                flex-direction: row;
+                font-size: 1.5rem;
+                font-weight: 500;
+                gap: 1rem;
+                flex-wrap: wrap;
+                padding: 0;
+
+                a:hover {
+                    color: #00FFFF;
+                    transition: ease-in 0.3s;
+                }
+            }
+        }
+        .auth-buttons {
+            display: flex;
+        }
+        .dropdown-menu-icon {
+            display: none;
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+
+    header {
+
+        .desktop-nav {
+            
+
+            ul {
+                gap: 2rem;
+            }
+        }
     }
 }

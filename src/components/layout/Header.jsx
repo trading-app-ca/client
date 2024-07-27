@@ -56,8 +56,8 @@ const Header = () => {
       </nav>
 
       <div className="auth-buttons">
-        <Link to="/login" className="login">Login</Link>
-        <Link to="/register" className="signup">Sign Up</Link>
+        <Link to="/login" className="login btn">Login</Link>
+        <Link to="/register" className="signup btn">Sign Up</Link>
       </div>
     </header>
   );

@@ -1,6 +1,8 @@
 // All styles are imported here and then this file is imported in App.js
 
+@import './utils/variables.scss';
 @import './base/base.scss';
+@import './components/Buttons.scss';
 @import './base/MainBackground.scss';
 
 @import './layout/Header.scss';
