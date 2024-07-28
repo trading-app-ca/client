@@ -1,11 +1,12 @@
 import React from 'react';
+import AuthForm from '../components/AuthForm';
 
 const Login = () => {
-  return (
-    <div>
-      <h1>Login</h1>
-    </div>
-  );
+  const handleLogin = (event) => {
+    event.preventDefault();
+  };
+
+  return <AuthForm isRegister={false} handleSubmit={handleLogin} />;
 };
 
 export default Login;
