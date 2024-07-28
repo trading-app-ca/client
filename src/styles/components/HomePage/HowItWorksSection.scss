@@ -1,0 +1,91 @@
+
+.how-it-works-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh; 
+    background-color: $tertiary-colour; 
+    padding: 20px; 
+    box-sizing: border-box;
+
+    .how-it-works-content {
+        display: flex;
+        flex-direction: column;
+        max-width: 1200px;
+        width: 100%;
+        gap: 20px;
+        color: #ffffff; 
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            h2 {
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+                color: #ffffff;
+            }
+
+            .step {
+                display: flex;
+                align-items: flex-start; 
+                gap: 20px;
+
+                .step-icon {
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .step-info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+
+                    .step-title {
+                        font-size: 1.25rem;
+                        color: #ffffff;
+                        margin: 0;
+                        padding-top: 10px;
+                    }
+
+                    .step-description {
+                        font-size: 1rem;
+                        color: #ffffff;
+                    }
+                }
+            }
+        }
+
+        .steps-image {
+            display: flex;
+            justify-content: center;
+
+            img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+                box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+            }
+        }
+    }
+
+    @media (min-width: 768px) {
+        .how-it-works-content {
+            flex-direction: row;
+            align-items: center;
+
+            .steps {
+                flex: 1;
+            }
+
+            .steps-image {
+                flex: 1;
+            }
+        }
+    }
+}
