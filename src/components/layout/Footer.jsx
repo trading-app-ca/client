@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaLinkedin, FaTwitter, FaFacebook } from 'react-icons/fa';
+import NewsletterSubscription from './NewsletterSubscription';
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -25,13 +26,7 @@ const Footer = () => {
         </nav>
         <div className="content-row">
           <div className="left-column">
-            <div className="newsletter">
-              <h3>Subscribe to our newsletter</h3>
-              <form>
-                <input type="email" placeholder="Email" />
-                <button type="submit">Subscribe</button>
-              </form>
-            </div>
+            <NewsletterSubscription />
           </div>
           <div className="right-column">
             <div className="social">
