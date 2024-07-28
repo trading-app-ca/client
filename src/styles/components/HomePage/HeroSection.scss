@@ -1,78 +1,71 @@
-
 .hero-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: left;
-    padding: 20px;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    flex-wrap: wrap;
-    flex-direction: column;
-
-    .left-container, .right-container {
-        flex-shrink: 1; 
-        min-height: 0;
-    }
-    .left-container {
+    @include flex-center;
+        text-align: left;
+        padding: 20px;
         width: 100%;
-        max-width: 476px;
-        padding-bottom: 3rem;
-        display: flex;
+        height: 100%;
+        overflow: hidden;
+        flex-wrap: wrap;
         flex-direction: column;
-        align-items: flex-start;
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1.25rem;
-            color: white;
-            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+        .left-container, .right-container {
+            flex-shrink: 1;
+            min-height: 0;
         }
 
-        p {
-            font-size: 1rem;
-            margin-bottom: 2.5rem;
-            color: white;
-            line-height: 1.5;
-            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-        }
-
-        .hero-buttons {
+        .left-container {
             width: 100%;
-            gap: 1.25rem;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            max-width: 476px;
+            padding-bottom: 3rem;
+            @include flex-center;
+            flex-direction: column;
+            align-items: flex-start;
 
-            .signup, .learn-more {
-                flex: 1;
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 1.25rem;
+                @include text-white;
+                @include box-shadow;
+            }
+
+            p {
+                font-size: 1rem;
+                margin-bottom: 2.5rem;
+                @include text-white;
+                line-height: 1.5;
+                @include box-shadow;
+            }
+
+            .hero-buttons {
+                width: 100%;
+                gap: 1.25rem;
+                @include flex-center;
+                flex-wrap: wrap;
+                justify-content: center;
+
+                .signup, .learn-more {
+                    flex: 1;
+                }
             }
         }
-    }
 
     .right-container {
-        
-        display: flex;
-        justify-content: center;
+        @include flex-center;
         padding-bottom: 5rem;
         flex-wrap: wrap;
 
         img {
             width: 100%;
             border-radius: 8px;
-            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+            @include box-shadow;
         }
     }
 }
 
-
-
-@media (min-width: 1000px) {
+@include media-breakpoint(1000px) {
     .hero-content {
         flex-direction: row;
-        max-width: 1240px;
-        width: 100%;
+        @include container-max-width(1240px);
         padding: 0;
         gap: 20px;
 
@@ -87,9 +80,8 @@
     }
 }
 
-@media (min-width: 1200px) {
+@include media-breakpoint(1200px) {
     .hero-content {
-
         justify-content: space-between;
         margin-bottom: 5rem;
 
@@ -99,39 +91,37 @@
                 margin: 0;
                 padding: 0;
             }
-    
+
             .left-container, .right-container {
                 padding: 40px;
                 width: 40%;
             }
         }
     }
-    
 }
 
 @media (max-height: 760px) {
-    .hero-content {
+  .hero-content {
+    .left-container {
+      padding: 0;
 
-        .left-container {
-            padding: 0;
-    
-            h1 {
-                font-size: 2rem;
-                margin-bottom: 1rem;
-            }
-    
-            p {
-                font-size: 0.875rem;
-                margin-bottom: 1.5rem;
-            }
-        }
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
 
-        .right-container {
-            padding: 20px 0;
-    
-            img {
-                padding: 0;
-            }
-        }
+      p {
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+      }
     }
+
+    .right-container {
+      padding: 20px 0;
+
+      img {
+        padding: 0;
+      }
+    }
+  }
 }

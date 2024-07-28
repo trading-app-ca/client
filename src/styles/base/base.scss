@@ -17,7 +17,7 @@ html, body {
     flex-direction: column;
     min-height: 100%;
     width: 100%;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 .sidebar {
@@ -27,26 +27,19 @@ html, body {
 .header-hero-wrapper {
     height: 100vh;
     width: 100vw;
-    display: flex;
+    @include flex-center;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    @include background-image('../../assets/images/background-image.png');
     overflow: hidden;
-    background-image: url('../../assets/images/background-image.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 }
-
 
 .scroll-animation {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out;
-}
 
-.scroll-animation.visible {
-opacity: 1;
-transform: translateY(0);
+    &.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
-
