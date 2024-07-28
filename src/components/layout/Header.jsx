@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
 import MobileDropdown from './MobileDropdown';
 
 const Header = () => {
   const [isGuestMenuOpen, setIsGuestMenuOpen] = useState(false);
   const [isAuthMenuOpen, setIsAuthMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleScroll = (section) => {
+    navigate('/');
+    setTimeout(() => {
+      const sectionElement = document.getElementById(section);
+      if (sectionElement) {
+        sectionElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
 
   const guestLinks = [
     { path: '/', label: 'Home' },
-    { path: '/about', label: 'About' },
-    { path: '/how-it-works', label: 'How It Works' },
+    { path: '#about', label: 'About', onClick: () => handleScroll('about') },
+    { path: '#how-it-works', label: 'How It Works', onClick: () => handleScroll('how-it-works') },
     { path: '/login', label: 'Login' },
     { path: '/register', label: 'Sign Up' },
   ];
@@ -50,8 +61,8 @@ const Header = () => {
       <nav className="desktop-nav">
         <ul>
           <li><Link to="/">Home</Link></li>
-          <li><Link to="/about">About</Link></li>
-          <li><Link to="/how-it-works">How It Works</Link></li>
+          <li><a onClick={() => handleScroll('about')}>About</a></li>
+          <li><a onClick={() => handleScroll('how-it-works')}>How It Works</a></li>
         </ul>
       </nav>
 

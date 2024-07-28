@@ -1,15 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaLinkedin, FaTwitter, FaFacebook } from 'react-icons/fa';
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleScroll = (section) => {
+    navigate('/');
+    setTimeout(() => {
+      const sectionElement = document.getElementById(section);
+      if (sectionElement) {
+        sectionElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+      }
+    }, 100);
+  };
+
   return (
     <footer className="footer">
       <div className="container">
         <nav className="nav">
-          <Link to="/about">About</Link>
-          <Link to="/how-it-works">How It Works</Link>
-          <Link to="/login">Login</Link>
+          <a onClick={() => handleScroll('about')}>About</a>
+          <a onClick={() => handleScroll('how-it-works')}>How It Works</a>
+          <a href="/login">Login</a>
         </nav>
         <div className="content-row">
           <div className="left-column">
@@ -45,7 +57,7 @@ const Footer = () => {
           <div className="contact">
             <p>Contact: email@example.com | Phone: 1234 567 890</p>
           </div>
-            <p>© 2024 Crypto Trader. All rights reserved.</p>
+          <p>© 2024 Crypto Trader. All rights reserved.</p>
         </div>
       </div>
     </footer>
