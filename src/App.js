@@ -1,7 +1,8 @@
 import React from 'react';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import Footer from './components/layout/Footer';
-import Sidebar from './components/layout/Sidebar';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import AuthUserLayout from './components/layout/AuthUserLayout';
+import GuestLayout from './components/layout/GuestLayout';
+import LoginSignupLayout from './components/layout/LoginSignupLayout';
 import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
 import Portfolio from './pages/Portfolio';
@@ -13,27 +14,39 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import NotFoundPage from './pages/NotFoundPage';
 
-function LayoutComponent() {
-  return (
-    <div className="layout">
-      <Sidebar />
-      <div className="page-content">
-        <Outlet />
-      </div>
-      <Footer />
-    </div>
-  );
-}
-
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <LayoutComponent />,
+    element: <GuestLayout />,
     children: [
       {
         index: true,
         element: <HomePage />,
       },
+      {
+        path: '*',
+        element: <NotFoundPage />,
+      },
+    ],
+  },
+  {
+    path: '/',
+    element: <LoginSignupLayout />,
+    children: [
+      {
+        path: 'login',
+        element: <Login />,
+      },
+      {
+        path: 'register',
+        element: <Register />,
+      },
+    ],
+  },
+  {
+    path: '/',
+    element: <AuthUserLayout />,
+    children: [
       {
         path: 'dashboard',
         element: <Dashboard />,
@@ -57,18 +70,6 @@ const router = createBrowserRouter([
       {
         path: 'account-settings',
         element: <AccountSettings />,
-      },
-      {
-        path: 'login',
-        element: <Login />,
-      },
-      {
-        path: 'register',
-        element: <Register />,
-      },
-      {
-        path: '*',
-        element: <NotFoundPage />,
       },
     ],
   },
