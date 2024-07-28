@@ -1,16 +1,16 @@
 // All styles are imported here and then this file is imported in App.js
 
 @import './utils/variables.scss';
+@import './utils/mixins.scss';
 
 @import './base/base.scss';
 
 @import './components/common/buttons.scss';
+@import './components/common/NewsletterSubscription.scss';
 
-@import './components/Header/Header.scss';
-@import './components/Header/MobileDropdown.scss';
-
+@import './layout/Header.scss';
+@import './layout/MobileDropdown.scss';
 @import './layout/Footer.scss';
-@import './layout/NewsletterSubscription.scss';
 
 @import './components/HomePage/HeroSection.scss';
 @import './components/HomePage/FeatureCardSection.scss';

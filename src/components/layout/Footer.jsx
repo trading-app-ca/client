@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaLinkedin, FaTwitter, FaFacebook } from 'react-icons/fa';
-import NewsletterSubscription from './NewsletterSubscription';
+import NewsletterSubscription from '../common/NewsletterSubscription';
 
 const Footer = () => {
   const navigate = useNavigate();

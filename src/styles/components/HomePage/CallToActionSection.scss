@@ -1,52 +1,34 @@
 .cta-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    background-color: $tertiary-colour;
-    padding: 40px 20px;
-    box-sizing: border-box;
+    @include section-base($tertiary-colour, 40px 20px);
 
     .cta-content {
-        display: flex;
+        @include flex-center;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        max-width: 1400px;
-        width: 100%;
-        color: #ffffff; 
+        @include container-max-width(1400px);
+        @include text-white;
         text-align: center;
 
         h2 {
             font-size: 2rem;
-            margin: 0 0 1.5rem 0; 
-            color: #ffffff;
+            margin: 0 0 1.5rem 0;
         }
 
         .cta-button {
             font-size: 1.25rem;
-            color: #ffffff;
-            background-color: transparent;
-            border: 2px solid #ffffff;
+            @include button-style(transparent, #ffffff, #ffffff, #ffffff, $tertiary-colour);
             border-radius: 8px;
             padding: 10px 20px;
-            cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
-
-            &:hover {
-                background-color: #ffffff;
-                color: $tertiary-colour;
-            }
         }
     }
 
-    @media (min-width: 768px) {
-        padding: 80px 40px;
+    @include media-breakpoint(768px) {
+        @include section-padding(80px 40px);
 
-        .cta-content {
-            h2 {
-                font-size: 2.5rem;
-            }
+            .cta-content {
+                h2 {
+                    font-size: 2.5rem;
+                }
 
             .cta-button {
                 font-size: 1.5rem;

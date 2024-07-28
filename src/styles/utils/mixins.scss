@@ -1,0 +1,96 @@
+// Basic Utilities
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin container-max-width($max-width) {
+    max-width: $max-width;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@mixin section-padding($padding) {
+    padding: $padding;
+    box-sizing: border-box;
+}
+
+@mixin media-breakpoint($breakpoint) {
+    @media (min-width: $breakpoint) {
+        @content;
+    }
+}
+
+// Styling Helpers
+@mixin text-white {
+    color: #ffffff;
+}
+
+@mixin box-shadow {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+@mixin background-image($url) {
+    background-image: url($url);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+  // Form and Inputs
+@mixin form-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: $primary-colour;
+    color: #fff;
+
+    &::placeholder {
+        color: #aaa;
+    }
+}
+
+// Section Helpers
+@mixin section-base($bg-color, $padding) {
+    @include flex-center;
+    width: 100%;
+    background-color: $bg-color;
+    @include section-padding($padding);
+}
+
+@mixin content-max-width($max-width) {
+    display: flex;
+    flex-direction: column;
+    @include container-max-width($max-width);
+    gap: 20px;
+}
+
+// Button Mixins
+@mixin button-hover($bg-color, $text-color) {
+    &:hover {
+        background-color: $bg-color;
+        color: $text-color;
+        transition: ease-in 0.2s;
+    }
+}
+
+@mixin button-style($bg-color, $border-color, $text-color, $hover-bg-color, $hover-text-color) {
+    background-color: $bg-color;
+    border: 1px solid $border-color;
+    color: $text-color;
+
+    @include button-hover($hover-bg-color, $hover-text-color);
+}
+
+@mixin button-base {
+    padding: 0.75rem 1.75rem;
+    border-radius: 12px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    cursor: pointer;
+
+    a {
+        text-decoration: none;
+    }
+}

@@ -1,30 +1,22 @@
 .feature-card-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    background-color: #f5f5f5;
-    padding: 40px 20px;
-    box-sizing: border-box;
+    @include section-base(#f5f5f5, 40px 20px);
 
     .feature-card-wrapper {
         display: grid;
         width: 100%;
-        max-width: 1400px;
+        @include container-max-width(1400px);
         gap: 20px;
-        grid-template-columns: 1fr; 
+        grid-template-columns: 1fr;
 
         .feature-card {
             background-color: white;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+            @include box-shadow;
             text-align: center;
-            display: flex;
+            @include flex-center;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
 
             .feature-icon {
                 width: 60px;
@@ -45,13 +37,13 @@
             }
         }
 
-        @media (min-width: 650px) {
+        @include media-breakpoint(650px) {
             grid-template-columns: repeat(2, 1fr);
         }
 
-        @media (min-width: 1000px) {
-            grid-template-columns: repeat(4, 1fr); 
+        @include media-breakpoint(1000px) {
+            grid-template-columns: repeat(4, 1fr);
             margin: 4rem 0;
         }
-    }
+    } 
 }
