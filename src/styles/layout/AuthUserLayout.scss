@@ -1,0 +1,28 @@
+.auth-user-layout {
+    display: flex;
+    min-height: 100vh;
+    background-image: url('../../assets/images/background-image.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  
+    .sidebar {
+      display: none;
+    }
+  
+    .page-content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+  
+    @media (min-width: 850px) {
+      .sidebar {
+        display: block;
+      }
+  
+      .page-content {
+        margin-left: 270px; // Adjusted to account for padding and margin of sidebar card
+      }
+    }
+  }
+  

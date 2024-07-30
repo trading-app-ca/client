@@ -6,11 +6,15 @@
 @import './base/base.scss';
 
 @import './components/common/buttons.scss';
+@import './components/common/Card.scss';
 @import './components/common/NewsletterSubscription.scss';
 
 @import './layout/Header.scss';
 @import './layout/MobileDropdown.scss';
 @import './layout/Footer.scss';
+@import './layout/Grid.scss';
+@import './layout/Sidebar.scss';
+@import './layout/AuthUserLayout.scss';
 
 @import './components/HomePage/HeroSection.scss';
 @import './components/HomePage/FeatureCardSection.scss';
