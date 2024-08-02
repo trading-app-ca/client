@@ -71,9 +71,6 @@ header {
       gap: 1rem;
     }
 
-    .dropdown-menu-icon {
-      display: none;
-    }
   }
 
   @include media-breakpoint(1200px) {
@@ -90,5 +87,11 @@ header {
         width: 100%;
       }
     }
+  }
+}
+
+@media (min-width: 768px) {
+  .dropdown-menu-icon {
+    display: none;
   }
 }

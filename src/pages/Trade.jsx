@@ -3,13 +3,19 @@ import Card from '../components/common/Card';
 
 const Trade = () => {
   return (
-    <div className="grid-container">
+    <div className="content-container">
       <Card title="Trade">
-        <p>Trading interface and tools.</p>
+        <h1>Trading Chart</h1>
+        <div className="placeholder-image"></div>
       </Card>
-      <Card title="Market Trends">
-        <p>Latest market trends and data.</p>
-      </Card>
+      <div className="row">
+        <Card title="Place your order">
+          <p>Latest market trends and data.</p>
+        </Card>
+        <Card title="Order history">
+          <p>Latest market trends and data.</p>
+        </Card>
+      </div>
     </div>
   );
 };

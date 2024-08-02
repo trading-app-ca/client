@@ -1,0 +1,23 @@
+.collapsible-section {
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 10px;
+    }
+  
+    .collapsible-content {
+      padding: 10px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  
+      &.open {
+        max-height: 1000px; // Large enough to fit the content
+        padding: 10px;
+      }
+    }
+  
+
+  }
+  
