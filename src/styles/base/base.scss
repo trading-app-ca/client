@@ -39,3 +39,19 @@ html, body {
         transform: translateY(0);
     }
 }
+.highlight {
+    color: $secondary-colour;
+}
+
+h2 {
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+h3 {
+    color: white;
+    margin: 0;
+    padding: 20px 0;
+    font-size: 1.25rem;
+}

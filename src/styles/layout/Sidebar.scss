@@ -4,7 +4,7 @@
   padding-bottom: 20px;
   display: none;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
 
   .sidebar-card {
     background-color: rgba(89, 162, 158, 0.2);;
@@ -39,14 +39,13 @@
   .sidebar {
     display: flex;
     width: 300px;
+    flex: 1;
     height: 100%;
-    background-color: purple;
-    flex-grow: 1;
+
 
     .sidebar-card {
       height: 100%;
-      margin-bottom: 20px;
-      background-color: orange;
+      margin: 0 0 0 20px;
       flex-grow: 1;
       display: flex;
     }

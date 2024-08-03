@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../components/common/Card';
+import { fakeCustomerData } from '../data';
+import RecentTrades from '../components/RecentTrades';
 
 const Trade = () => {
+  const [trades, setTrades] = useState([]);
+
+  useEffect(() => {
+    setTrades(fakeCustomerData.recentTrades);
+  }, []);
+
   return (
     <div className="content-container">
       <Card title="Trade">
@@ -10,10 +18,12 @@ const Trade = () => {
       </Card>
       <div className="row">
         <Card title="Place your order">
-          <p>Latest market trends and data.</p>
+          <p>Buy or Sell</p>
         </Card>
-        <Card title="Order history">
-          <p>Latest market trends and data.</p>
+        <Card title="Recent Trades">
+          {trades.map((trade, index) => (
+            <RecentTrades key={index} trade={trade} />
+          ))}
         </Card>
       </div>
     </div>
