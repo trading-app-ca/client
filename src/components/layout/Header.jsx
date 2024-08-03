@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
 import MobileDropdown from './MobileDropdown';
+import { authLinks } from '../common/AuthLinks';
+import { fakeCustomerData } from '../../data'; 
 
 const Header = () => {
-  const [isGuestMenuOpen, setIsGuestMenuOpen] = useState(false);
-  const [isAuthMenuOpen, setIsAuthMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  const { name: customerName, balance: accountBalance, portfolioValue } = fakeCustomerData; // Destructure the customer data
 
   const handleScroll = (section) => {
     navigate('/');
@@ -26,23 +29,11 @@ const Header = () => {
     { path: '/register', label: 'Sign Up' },
   ];
 
-  const authLinks = [
-    { path: '/dashboard', label: 'Dashboard' },
-    { path: '/portfolio', label: 'Portfolio' },
-    { path: '/trade', label: 'Trade' },
-    { path: '/transactions', label: 'Transactions' },
-    { path: '/deposit-withdraw', label: 'Deposit/Withdraw' },
-    { path: '/account-settings', label: 'Account Settings' },
-    { path: '/logout', label: 'Logout' },
-  ];
-
-  const toggleGuestMenu = () => {
-    setIsGuestMenuOpen(!isGuestMenuOpen);
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
-  const toggleAuthMenu = () => {
-    setIsAuthMenuOpen(!isAuthMenuOpen);
-  };
+  const isAuthenticated = true; 
 
   return (
     <header>
@@ -52,24 +43,38 @@ const Header = () => {
         </Link>
       </div>
       
-      <FaBars size={40} className="dropdown-menu-icon" onClick={toggleGuestMenu} />
-      {/* <FaBars size={40} className="dropdown-menu-icon" onClick={toggleAuthMenu} /> */}
+      <FaBars size={40} className="dropdown-menu-icon" onClick={toggleMenu} />
+      <MobileDropdown 
+        isOpen={isMenuOpen} 
+        onClose={toggleMenu} 
+        links={isAuthenticated ? authLinks : guestLinks} 
+        isAuth={isAuthenticated} 
+      />
 
-      <MobileDropdown isOpen={isGuestMenuOpen} onClose={toggleGuestMenu} links={guestLinks} isAuth={false} />
-      <MobileDropdown isOpen={isAuthMenuOpen} onClose={toggleAuthMenu} links={authLinks} isAuth={true} />
+      {isAuthenticated && (
+        <div className="auth-info">
+          <h2>Welcome, <span className="highlight">{customerName}.</span></h2>
+          <p>Balance: <span className="highlight">${accountBalance.toFixed(2)}</span></p>
+          <p>Portfolio Value: <span className="highlight">${portfolioValue.toFixed(2)}</span></p>
+        </div>
+      )}
 
       <nav className="desktop-nav">
-        <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><a onClick={() => handleScroll('about')}>About</a></li>
-          <li><a onClick={() => handleScroll('how-it-works')}>How It Works</a></li>
-        </ul>
+        {!isAuthenticated && (
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><a onClick={() => handleScroll('about')}>About</a></li>
+            <li><a onClick={() => handleScroll('how-it-works')}>How It Works</a></li>
+          </ul>
+        )}
       </nav>
 
-      <div className="auth-buttons">
-        <Link to="/login" className="login btn">Login</Link>
-        <Link to="/register" className="signup btn">Sign Up</Link>
-      </div>
+      {!isAuthenticated && (
+        <div className="auth-buttons">
+          <Link to="/login" className="login btn">Login</Link>
+          <Link to="/register" className="signup btn">Sign Up</Link>
+        </div>
+      )}
     </header>
   );
 };

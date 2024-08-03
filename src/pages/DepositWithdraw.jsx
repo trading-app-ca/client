@@ -1,30 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '../components/common/Card';
+import '../styles/pages/DepositWithdraw.scss';
 
 const DepositWithdraw = () => {
+  const [mode, setMode] = useState('Deposit'); 
+
+  const handleModeChange = (newMode) => {
+    setMode(newMode);
+  };
+
   return (
-    <div className="grid-container">
+    <div className="content-container">
       <Card title="Manage Your Funds">
         <p>Deposit or withdraw virtual funds to manage your account balance.</p>
-        <p>Current Balance: <span className="highlight">$5,000.00</span></p>
+        <p className="balance">Current Balance: <span className="highlight">$5,000.00</span></p>
       </Card>
-      <Card title="Withdraw Funds">
-        <div className="withdraw-funds">
+
+      <Card title={`${mode} Funds`} className="transition-card">
+        <div className={`withdraw-funds ${mode.toLowerCase()}-mode`}>
           <div className="toggle-buttons">
-            <button className="active">Deposit</button>
-            <button>Withdraw</button>
+            <button
+              className={`btn dw-btn ${mode === 'Deposit' ? 'lgt-btn active' : 'faded'}`}
+              onClick={() => handleModeChange('Deposit')}
+            >
+              Deposit
+            </button>
+            <button
+              className={`btn dw-btn ${mode === 'Withdraw' ? 'lgt-btn active' : 'faded'}`}
+              onClick={() => handleModeChange('Withdraw')}
+            >
+              Withdraw
+            </button>
           </div>
-          <div className="amount-buttons">
-            <button>$100</button>
-            <button>$500</button>
-            <button>$1,000</button>
-            <button>$5,000</button>
-            <button>$10,000</button>
+
+          <div className="amount-select">
+            <label htmlFor="amount">Select Amount:</label>
+            <select id="amount" name="amount" className="select-input">
+              <option value="">-- Select an amount --</option>
+              <option value="100">$100</option>
+              <option value="500">$500</option>
+              <option value="1000">$1,000</option>
+              <option value="5000">$5,000</option>
+              <option value="10000">$10,000</option>
+            </select>
           </div>
-          <input type="text" placeholder="Enter Amount" />
+
+          <div className="amount-input">
+            <label htmlFor="customAmount">Enter Amount:</label>
+            <input
+              type="number"
+              id="customAmount"
+              placeholder="Enter Amount"
+              step="0.01"
+            />
+          </div>
+
           <div className="action-buttons">
-            <button>Reset</button>
-            <button className="confirm-button">Confirm Deposit</button>
+            <button className="btn confirm-button">
+              Confirm {mode}
+            </button>
           </div>
         </div>
       </Card>

@@ -1,0 +1,91 @@
+@import '../utils/mixins.scss';
+@import '../utils/variables.scss';
+
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+
+    .card {
+        .card-title {
+            transition: all 0.7s ease-in-out;
+        }
+    }
+}
+
+
+.withdraw-funds {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+    &.deposit-mode {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    &.withdraw-mode {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.toggle-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+
+    .btn {
+        flex: 1;
+        @include button-style($secondary-colour, $tertiary-colour, $quaternary-colour, $tertiary-colour, $primary-colour);
+        text-align: center;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        &.active {
+            background-color: $tertiary-colour;
+            color: $primary-colour;
+        }
+    }
+}
+
+.amount-select,
+.amount-input {
+    display: flex;
+    flex-direction: column;
+    width: 100%; 
+    margin: 0;
+
+    label {
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #ffffff;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .select-input,
+    input {
+        @include form-input;
+        background-color: $primary-colour;
+        color: #ffffff;
+        border: 1px solid $tertiary-colour;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+    }
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    text-align: center;
+    width: 100%;
+
+    .btn {
+        width: 100%;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    }        
+
+    .confirm-button {
+        @include button-style($secondary-colour, $secondary-colour, $quaternary-colour, darken($secondary-colour, 10%), $quaternary-colour);
+    }
+}
