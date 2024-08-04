@@ -3,8 +3,8 @@ import axios from 'axios';
 import Card from '../components/common/Card';
 import CollapsibleSection from '../components/common/CollapsibleSection';
 import { fakeCustomerData } from '../data';
-import PortfolioChart from '../components/PortfolioChart';
-import PortfolioAllocationChart from '../components/PortfolioAllocationChart'; 
+import PortfolioChart from '../components/portfolio/PortfolioChart';
+import PortfolioAllocationChart from '../components/portfolio/PortfolioAllocationChart'; 
 import RecentActivityCard from '../components/RecentActivityCard'; 
 
 const Portfolio = () => {
