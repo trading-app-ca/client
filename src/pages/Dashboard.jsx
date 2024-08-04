@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Card from '../components/common/Card';
 import { fakeCustomerData } from '../data';
 import axios from 'axios';
-import PortfolioChart from '../components/PortfolioChart';
+import PortfolioChart from '../components/portfolio/PortfolioChart';
 import RecentActivityCard from '../components/RecentActivityCard';
 
 const Dashboard = () => {
