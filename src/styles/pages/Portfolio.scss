@@ -1,0 +1,17 @@
+.card {
+    margin-bottom: 20px;
+}
+
+
+.portfolio-allocation-chart {
+    width: 100%;
+  }
+  
+  @media (min-width: 500px) {
+  
+    .portfolio-allocation-chart {
+      width: 400px;   
+      height: 400px;  
+      margin: 0 auto;
+    }
+  }  

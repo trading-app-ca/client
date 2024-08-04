@@ -1,9 +1,10 @@
 .collapsible-section {
     .collapsible-header {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items:flex-start;
       cursor: pointer;
-      padding: 10px;
     }
   
     .collapsible-content {
@@ -13,11 +14,8 @@
       transition: max-height 0.3s ease-out, padding 0.3s ease-out;
   
       &.open {
-        max-height: 1000px; // Large enough to fit the content
+        max-height: 1000px;
         padding: 10px;
       }
     }
-  
-
-  }
-  
+}
