@@ -36,7 +36,9 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
+
 
   // Form and Inputs
 @mixin form-input {
