@@ -3,6 +3,7 @@ import Card from '../components/common/Card';
 import { fakeCustomerData } from '../data';
 import axios from 'axios';
 import PortfolioChart from '../components/PortfolioChart';
+import RecentActivityCard from '../components/RecentActivityCard';
 
 const Dashboard = () => {
   const [customerData] = useState(fakeCustomerData);
@@ -40,29 +41,9 @@ const Dashboard = () => {
     fetchMarketData();
   }, []);
 
-  const mappedTransactions = customerData.recentTransactions.map(tx => ({
-    date: new Date(tx.date.split('/').reverse().join('-')),
-    type: tx.type,
-    amount: tx.amount,
-    asset: tx.asset
-  }));
-
-  const mappedTrades = customerData.recentTrades.map(trade => ({
-    date: new Date(trade.date.split('/').reverse().join('-')),
-    type: trade.action === 'Buy' ? 'Buy' : 'Sell',
-    amount: trade.total,
-    asset: trade.pair
-  }));
-
-  const recentActivity = [
-    ...mappedTransactions.sort((a, b) => b.date - a.date).slice(0, 2),
-    ...mappedTrades.sort((a, b) => b.date - a.date).slice(0, 2)
-  ];
-
   return (
     <div className="content-container">
       <div className="row">
-
         <Card title="Market Overview" className="transaction-details">
           <p>BTC: <span className="highlight">${marketData.BTC}</span></p>
           <p>ETH: <span className="highlight">${marketData.ETH}</span></p>
@@ -71,14 +52,10 @@ const Dashboard = () => {
           <p>ADA: <span className="highlight">${marketData.ADA}</span></p>
         </Card>
 
-        <Card title="Recent Activity" className="transaction-details">
-          {recentActivity.map((activity, index) => (
-            <div key={index}>
-              <p><strong>{activity.type}:</strong> <span className="highlight">${activity.amount.toFixed(2)} <em>({activity.asset})</em></span></p>
-            </div>
-          ))}
-        </Card>
-
+        <RecentActivityCard
+          recentTransactions={customerData.recentTransactions}
+          recentTrades={customerData.recentTrades}
+        />
       </div>
 
       <Card title="Your Portfolio">
