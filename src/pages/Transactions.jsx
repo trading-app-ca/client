@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { fakeCustomerData } from '../data';
-import '../styles/pages/Transactions.scss';
-import TransactionDetails from '../components/TransactionDetails';
+import TransactionsHistory from '../components/TransactionHistory';
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; 
 
   useEffect(() => {
     setTransactions(fakeCustomerData.recentTransactions);
@@ -12,12 +13,12 @@ const Transactions = () => {
 
   return (
     <div className="content-container">
-      <h2 id="transactions-title">Transactions</h2>
-      <div className="row">
-        {transactions.map((transaction, index) => (
-          <TransactionDetails key={index} transaction={transaction} />
-        ))}
-      </div>
+      <TransactionsHistory 
+        transactions={transactions} 
+        currentPage={currentPage} 
+        itemsPerPage={itemsPerPage} 
+        setCurrentPage={setCurrentPage} 
+      />
     </div>
   );
 };
