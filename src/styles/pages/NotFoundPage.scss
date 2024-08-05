@@ -1,0 +1,31 @@
+.guest-layout {
+    min-height: 100vh;
+    background-image: url('../../assets/images/background-image.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-attachment: fixed;
+
+    .page-content {
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        text-align: center;
+    
+    }
+
+
+}
+
+footer {
+    width: 100vw;
+    margin-top: auto;
+}
+
