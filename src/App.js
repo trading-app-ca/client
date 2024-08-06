@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import AuthProvider from './contexts/AuthContext';
 import AuthUserLayout from './components/layout/AuthUserLayout';
 import GuestLayout from './components/layout/GuestLayout';
 import LoginSignupLayout from './components/layout/LoginSignupLayout';
@@ -76,7 +77,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
 }
 
 export default App;

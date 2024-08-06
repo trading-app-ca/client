@@ -49,6 +49,10 @@ const PortfolioChart = ({ portfolioData }) => {
     };
   }, [portfolioData]);
 
+  if (!portfolioData || !portfolioData.labels || !portfolioData.values || portfolioData.values.length === 0) {
+    return <p>No portfolio history available.</p>;
+  }
+
   return <canvas ref={chartRef} height="300"></canvas>;
 };
 

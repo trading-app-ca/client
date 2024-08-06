@@ -54,6 +54,10 @@ const PortfolioAllocationChart = ({ assets }) => {
     };
   }, [assets]);
 
+  if (!assets || assets.length === 0) {
+    return <p>No asset allocation data available.</p>;
+  }
+
   return (
     <div className="portfolio-allocation-chart">
       <canvas ref={chartRef}></canvas>

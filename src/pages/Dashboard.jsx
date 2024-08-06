@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Card from '../components/common/Card';
-import { fakeCustomerData } from '../data';
 import axios from 'axios';
 import PortfolioChart from '../components/portfolio/PortfolioChart';
 import RecentActivityCard from '../components/RecentActivityCard';
+import { AuthContext } from '../contexts/AuthContext';
 
 const Dashboard = () => {
-  const [customerData] = useState(fakeCustomerData);
+  const { auth } = useContext(AuthContext);
+  const [customerData, setCustomerData] = useState(null);
   const [marketData, setMarketData] = useState({
     BTC: 0,
     ETH: 0,
@@ -16,6 +17,17 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
+    const fetchCustomerData = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/user', {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        });
+        setCustomerData(response.data);
+      } catch (error) {
+        console.error('Error fetching customer data:', error);
+      }
+    };
+
     const fetchMarketData = async () => {
       try {
         const [btcResponse, ethResponse, ltcResponse, bnbResponse, adaResponse] = await Promise.all([
@@ -38,8 +50,13 @@ const Dashboard = () => {
       }
     };
 
+    fetchCustomerData();
     fetchMarketData();
-  }, []);
+  }, [auth.token]);
+
+  if (!customerData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="content-container">
