@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
 import MobileDropdown from './MobileDropdown';
 import { authLinks } from '../common/AuthLinks';
-import { fakeCustomerData } from '../../data'; 
+import { AuthContext } from '../../contexts/AuthContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { auth, logout } = useContext(AuthContext); 
+  const { isAuthenticated, user } = auth;
   const navigate = useNavigate();
-
-  const { name: customerName, balance: accountBalance, portfolioValue } = fakeCustomerData; 
 
   const handleScroll = (section) => {
     navigate('/');
@@ -33,7 +33,6 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const isAuthenticated = false; 
 
   return (
     <header>
@@ -42,7 +41,7 @@ const Header = () => {
           <img src="logo.png" alt="Crypto Trader Logo" />
         </Link>
       </div>
-      
+
       <FaBars size={40} className="dropdown-menu-icon" onClick={toggleMenu} />
       <MobileDropdown 
         isOpen={isMenuOpen} 
@@ -51,25 +50,28 @@ const Header = () => {
         isAuth={isAuthenticated} 
       />
 
-      {isAuthenticated && (
+        {isAuthenticated && user && (
         <div className="auth-info">
-          <h2>Welcome, <span className="highlight">{customerName}.</span></h2>
-          <p>Balance: <span className="highlight">${accountBalance.toFixed(2)}</span></p>
-          <p>Portfolio Value: <span className="highlight">${portfolioValue.toFixed(2)}</span></p>
+          <h2>Welcome, <span className="highlight">{user.firstName} {user.lastName}.</span></h2>
+          <p>Balance: <span className="highlight">${(user.balance !== undefined ? user.balance.toFixed(2) : 'N/A')}</span></p>
+          <p>Portfolio Value: <span className="highlight">${(user.portfolioValue !== undefined ? user.portfolioValue.toFixed(2) : 'N/A')}</span></p>
         </div>
       )}
 
       <nav className="desktop-nav">
-        {!isAuthenticated && (
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><a onClick={() => handleScroll('about')}>About</a></li>
-            <li><a onClick={() => handleScroll('how-it-works')}>How It Works</a></li>
-          </ul>
-        )}
+      {!isAuthenticated && (
+        <div className="auth-buttons">
+          <Link to="/login" className="login btn">Login</Link>
+          <Link to="/register" className="signup btn">Sign Up</Link>
+        </div>
+      )}
       </nav>
 
-      {!isAuthenticated && (
+      {isAuthenticated ? (
+        <div className="auth-buttons">
+          <button onClick={logout} className="logout btn">Logout</button>
+        </div>
+      ) : (
         <div className="auth-buttons">
           <Link to="/login" className="login btn">Login</Link>
           <Link to="/register" className="signup btn">Sign Up</Link>

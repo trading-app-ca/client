@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from './common/Card';
 
-const RecentActivityCard = ({ recentTransactions, recentTrades }) => {
+const RecentActivityCard = ({ recentTransactions = [], recentTrades = [] }) => {
   const mappedTransactions = recentTransactions.map(tx => ({
     date: new Date(tx.date.split('/').reverse().join('-')),
     type: tx.type,
@@ -17,9 +17,9 @@ const RecentActivityCard = ({ recentTransactions, recentTrades }) => {
   }));
 
   const recentActivity = [
-    ...mappedTransactions.sort((a, b) => b.date - a.date).slice(0, 2),
-    ...mappedTrades.sort((a, b) => b.date - a.date).slice(0, 2)
-  ];
+    ...mappedTransactions,
+    ...mappedTrades
+  ].sort((a, b) => b.date - a.date).slice(0, 4);
 
   return (
     <Card title="Recent Activity" className="transaction-details">
@@ -30,7 +30,7 @@ const RecentActivityCard = ({ recentTransactions, recentTrades }) => {
           </div>
         ))
       ) : (
-        <p>No recent activity.</p>
+        <p>No current history.</p>
       )}
     </Card>
   );

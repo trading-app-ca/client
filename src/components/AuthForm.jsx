@@ -38,12 +38,6 @@ const AuthForm = ({ isRegister, handleSubmit }) => {
             <label htmlFor="password">Password:</label>
             <input type="password" id="password" name="password" required />
           </div>
-          {isRegister && (
-            <div>
-              <label htmlFor="confirmPassword">Confirm Password:</label>
-              <input type="password" id="confirmPassword" name="confirmPassword" required />
-            </div>
-          )}
           <button className="btn lgt-btn" type="submit">
             {isRegister ? 'Create your account' : 'Sign in'}
           </button>
