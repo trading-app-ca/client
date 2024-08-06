@@ -1,15 +1,11 @@
 div.form-container {
     padding: 0;
-    // display: flex;
 
     form {
-        // display: flex;
-        // flex-direction: column;
-        gap: 20px;
+        @include form-layout;
 
         .form-input {
-            display: flex;
-            flex-direction: column;
+            @include flex-column;
 
             input {
                 padding: 10px;
@@ -19,16 +15,15 @@ div.form-container {
                 margin-bottom: 5px;
             }
         }
-    width: 100%;
+        @include full-width;
     }
-    
 }
 
 .card-content {
-    padding: 10px 0;
+    @include card-content;
 }
 
 .delete-button {
     margin-top: 10px;
-    width: 100%;
+    @include full-width;
 }

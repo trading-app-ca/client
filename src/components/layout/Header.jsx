@@ -9,7 +9,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { name: customerName, balance: accountBalance, portfolioValue } = fakeCustomerData; // Destructure the customer data
+  const { name: customerName, balance: accountBalance, portfolioValue } = fakeCustomerData; 
 
   const handleScroll = (section) => {
     navigate('/');
@@ -33,7 +33,7 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const isAuthenticated = true; 
+  const isAuthenticated = false; 
 
   return (
     <header>

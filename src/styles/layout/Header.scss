@@ -4,7 +4,6 @@ header {
   padding: 20px;
   color: white;
   width: 100%;
-  overflow: hidden;
   flex-wrap: wrap;
 
   .dropdown-menu-icon {
@@ -17,7 +16,7 @@ header {
     margin: 0;
 
     img {
-      width: 100%;
+      max-width: 100%;
     }
   }
 
@@ -67,15 +66,16 @@ header {
     display: none;
   }
 
-  @include media-breakpoint(850px) {
+  @include media-breakpoint(768px) {
     max-width: 1400px;
     margin: auto;
 
     .desktop-nav {
       display: flex;
+      flex-wrap: wrap;
 
       ul {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: 500;
         padding: 0;
         text-align: left;
@@ -111,31 +111,26 @@ header {
 }
 
 @media (min-width: 768px) {
-header {
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  .auth-info {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 20px 0;
+  header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    .auth-info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 20px 0;
 
-    h2 {
-      margin: 0;
+      h2 {
+        margin: 0;
+      }
     }
   }
-}
   .dropdown-menu-icon {
     display: none;
   }
 }
 
-@media (min-width: 1000px) {
-  header {
-      flex-direction: row;
-      justify-content: space-between;
-}
 @media (min-width: 1200px) {
 
   header {
@@ -147,4 +142,3 @@ header {
     }
   }  
     }
-  }
