@@ -19,7 +19,7 @@ const Register = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', data);
+      const response = await axios.post('https://crypto-trader-server.onrender.com/api/auth/register', data);
       console.log('Registration successful:', response.data);
       navigate('/login');
     } catch (error) {

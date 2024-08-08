@@ -19,7 +19,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/user', {
+        const response = await axios.get('https://crypto-trader-server.onrender.com/api/user', {
           headers: { Authorization: `Bearer ${auth.token}` },
         });
         setCustomerData(response.data);

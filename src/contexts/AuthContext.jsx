@@ -13,7 +13,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (token) {
-      axios.get('http://localhost:5000/api/user', { headers: { Authorization: `Bearer ${token}` } })
+      axios.get('https://crypto-trader-server.onrender.com/api/user', { headers: { Authorization: `Bearer ${token}` } })
         .then(response => {
           setAuth({
             isAuthenticated: true,
