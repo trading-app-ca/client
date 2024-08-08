@@ -60,11 +60,12 @@ const Header = () => {
 
       <nav className="desktop-nav">
       {!isAuthenticated && (
-        <div className="auth-buttons">
-          <Link to="/login" className="login btn">Login</Link>
-          <Link to="/register" className="signup btn">Sign Up</Link>
-        </div>
-      )}
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><a onClick={() => handleScroll('about')}>About</a></li>
+            <li><a onClick={() => handleScroll('how-it-works')}>How It Works</a></li>
+          </ul>
+        )}
       </nav>
 
       {isAuthenticated ? (
