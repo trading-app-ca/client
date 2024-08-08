@@ -5,17 +5,22 @@ const PortfolioChart = ({ portfolioData }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    if (!portfolioData || !portfolioData.labels || !portfolioData.values) return;
+    console.log('Portfolio Data:', portfolioData); // Log the data to see its structure
+
+    if (!portfolioData || portfolioData.length === 0) return;
+
+    const labels = portfolioData.map(dataPoint => new Date(dataPoint.date).toLocaleDateString());
+    const values = portfolioData.map(dataPoint => dataPoint.value);
 
     const ctx = chartRef.current.getContext('2d');
     const chartInstance = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: portfolioData.labels, 
+        labels: labels,
         datasets: [
           {
             label: 'Portfolio Value',
-            data: portfolioData.values, 
+            data: values,
             fill: true,
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
@@ -29,7 +34,7 @@ const PortfolioChart = ({ portfolioData }) => {
             beginAtZero: false,
             ticks: {
               callback: function (value) {
-                return `$${value}`;
+                return `$${value.toFixed(2)}`;
               },
             },
           },
@@ -49,7 +54,7 @@ const PortfolioChart = ({ portfolioData }) => {
     };
   }, [portfolioData]);
 
-  if (!portfolioData || !portfolioData.labels || !portfolioData.values || portfolioData.values.length === 0) {
+  if (!portfolioData || portfolioData.length === 0) {
     return <p>No portfolio history available.</p>;
   }
 

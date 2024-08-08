@@ -12,10 +12,10 @@ const PortfolioAllocationChart = ({ assets }) => {
     const chartInstance = new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: assets.map(asset => asset.name),
+        labels: assets.map(asset => asset.asset),
         datasets: [
           {
-            data: assets.map(asset => asset.quantityHeld * asset.currentPrice),
+            data: assets.map(asset => asset.quantity * asset.currentPrice),
             backgroundColor: [
               '#FF6384',
               '#36A2EB',
