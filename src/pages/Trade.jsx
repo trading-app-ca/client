@@ -108,26 +108,26 @@ const Trade = () => {
       <TradingChart cryptocurrency={cryptocurrency} />
 
       <div className="row">
-        <NewTrade
-          orderType={orderType}
-          setOrderType={setOrderType}
-          cryptocurrency={cryptocurrency}
-          cryptocurrencies={cryptocurrencies}
-          setCryptocurrency={setCryptocurrency}
-          quantity={quantity}
-          setQuantity={setQuantity}
-          total={total}
-          handleSubmit={handleSubmit}
-          balance={balance}
-          holdings={holdings}
-        />
-        <TradeHistory
-          trades={tradeHistory}
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          setCurrentPage={setCurrentPage}
-        />
-      </div>
+      <NewTrade
+        orderType={orderType}
+        setOrderType={setOrderType}
+        cryptocurrency={cryptocurrency}
+        cryptocurrencies={cryptocurrencies}
+        setCryptocurrency={setCryptocurrency}
+        quantity={quantity}
+        setQuantity={setQuantity}
+        total={total}
+        handleSubmit={handleSubmit}
+        balance={balance}
+        holdings={holdings}
+      />
+      <TradeHistory
+        trades={tradeHistory}
+        currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
+        setCurrentPage={setCurrentPage}
+      />
+    </div>
     </div>
   );
 };

@@ -16,7 +16,7 @@ const Portfolio = () => {
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/portfolio', {
+        const response = await axios.get('https://crypto-trader-server.onrender.com/api/portfolio', {
           headers: { Authorization: `Bearer ${auth.token}` },
         });
         setCustomerData(response.data);
