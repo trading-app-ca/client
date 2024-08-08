@@ -6,18 +6,11 @@ const TransactionHistory = ({ transactions, currentPage, itemsPerPage, setCurren
   const [filterType, setFilterType] = useState('all');
   const [itemsPerPageOption, setItemsPerPageOption] = useState(itemsPerPage);
 
-  const parseDate = (dateStr) => {
-    const [day, month, year] = dateStr.split('/');
-    return new Date(`${year}-${month}-${day}`);
-  };
-
-  const filteredTransactions = transactions.filter(transaction =>
-    filterType === 'all' ? true : transaction.type.toLowerCase() === filterType
-  );
-
-  const sortedTransactions = filteredTransactions.sort((a, b) => 
-    sortOrder === 'newest' ? parseDate(b.date) - parseDate(a.date) : parseDate(a.date) - parseDate(b.date)
-  );
+  const sortedTransactions = transactions
+    .filter(transaction => filterType === 'all' ? true : transaction.type.toLowerCase() === filterType)
+    .sort((a, b) => 
+      sortOrder === 'newest' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date)
+    );
 
   const handleItemsPerPageChange = (e) => {
     const value = e.target.value === 'all' ? sortedTransactions.length : parseInt(e.target.value);
@@ -57,14 +50,17 @@ const TransactionHistory = ({ transactions, currentPage, itemsPerPage, setCurren
         </div>
       </div>
 
-      <ul className="trade-history-list">
-        {currentTransactions.map((transaction, index) => (
-          <li key={index} className="trade-history-item">
-            {transaction.date}: {transaction.type} ${transaction.amount.toFixed(2)} {transaction.asset} at 
-            <span className="highlight trade-price"> ${transaction.price.toFixed(2)}</span>
-          </li>
-        ))}
-      </ul>
+      {currentTransactions.length > 0 ? (
+        <ul className="trade-history-list">
+          {currentTransactions.map((transaction, index) => (
+            <li key={index} className="trade-history-item">
+              {new Date(transaction.date).toLocaleString()}: {transaction.type} ${transaction.amount.toFixed(2)}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No transaction history</p>
+      )}
 
       <div className="pagination">
         {currentPage > 1 && (

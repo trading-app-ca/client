@@ -13,19 +13,32 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (token) {
-      axios.get('https://crypto-trader-server.onrender.com/api/user', { headers: { Authorization: `Bearer ${token}` } })
-        .then(response => {
-          setAuth({
-            isAuthenticated: true,
-            user: response.data,
-            token: token,
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching user info:', error);
+      axios.get('https://crypto-trader-server.onrender.com/api/user', { 
+        headers: { Authorization: `Bearer ${token}` } 
+      })
+      .then(response => {
+        setAuth({
+          isAuthenticated: true,
+          user: response.data,
+          token: token,
         });
+      })
+      .catch(error => {
+        console.error('Error fetching user info:', error);
+        logout();
+      });
     }
   }, []);
+
+  const login = (userData, token) => {
+    localStorage.setItem('authToken', token);
+
+    setAuth({
+      isAuthenticated: true,
+      user: userData,
+      token: token,
+    });
+  };
 
   const logout = () => {
     localStorage.removeItem('authToken');
@@ -37,7 +50,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, logout }}>
+    <AuthContext.Provider value={{ auth, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

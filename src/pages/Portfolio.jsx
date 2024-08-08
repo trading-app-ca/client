@@ -53,10 +53,10 @@ const Portfolio = () => {
     fetchMarketData();
   }, [auth.token]);
 
-  const calculateAssetOverview = (assetSymbol, quantityHeld, averagePurchasePrice) => {
-    const currentPrice = marketData ? marketData[assetSymbol] || 0 : 0;
-    const currentValue = currentPrice * quantityHeld;
-    const profitLoss = (currentPrice - averagePurchasePrice) * quantityHeld;
+  const calculateAssetOverview = (asset, quantity, averagePurchasePrice) => {
+    const currentPrice = marketData ? marketData[asset.toUpperCase()] || 0 : 0;
+    const currentValue = currentPrice * quantity;
+    const profitLoss = (currentPrice - averagePurchasePrice) * quantity;
     const profitLossPercentage = averagePurchasePrice !== 0 ? ((currentPrice - averagePurchasePrice) / averagePurchasePrice) * 100 : 0;
 
     return { currentPrice, currentValue, profitLoss, profitLossPercentage };
@@ -64,7 +64,7 @@ const Portfolio = () => {
 
   const assetsWithValues = customerData && customerData.assets ? customerData.assets.map(asset => ({
     ...asset,
-    ...calculateAssetOverview(asset.symbol, asset.quantityHeld, asset.averagePurchasePrice),
+    ...calculateAssetOverview(asset.asset, asset.quantity, asset.averagePurchasePrice),
   })) : [];
 
   return (
@@ -101,11 +101,11 @@ const Portfolio = () => {
       {assetsWithValues.length > 0 && (
         <div className="asset-cards">
           {assetsWithValues.map((asset, index) => (
-            <Card title={`${asset.name} (${asset.symbol})`} key={index} className="asset-cards">
-              <p>Quantity Held: <span className="highlight">{asset.quantityHeld}</span></p>
+            <Card title={`${asset.asset.toUpperCase()} (${asset.asset.toUpperCase()})`} key={index} className="asset-cards">
+              <p>Quantity Held: <span className="highlight">{asset.quantity}</span></p>
               <p>Current Value: <span className="highlight">${asset.currentValue.toFixed(2)}</span></p>
-              <p>Average Purchase Price: <span className="highlight">${asset.averagePurchasePrice.toFixed(2)} per {asset.symbol}</span></p>
-              <p>Current Price: <span className="highlight">${asset.currentPrice.toFixed(2)} per {asset.symbol}</span></p>
+              <p>Average Purchase Price: <span className="highlight">${asset.averagePurchasePrice.toFixed(2)} per {asset.asset.toUpperCase()}</span></p>
+              <p>Current Price: <span className="highlight">${asset.currentPrice.toFixed(2)} per {asset.asset.toUpperCase()}</span></p>
               <p>Profit/Loss: <span className="highlight">${asset.profitLoss.toFixed(2)} ({asset.profitLossPercentage.toFixed(2)}%)</span></p>
 
               <CollapsibleSection title="Historical Performance">

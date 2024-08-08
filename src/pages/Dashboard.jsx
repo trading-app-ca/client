@@ -22,7 +22,7 @@ const Dashboard = () => {
         const response = await axios.get('https://crypto-trader-server.onrender.com/api/user', {
           headers: { Authorization: `Bearer ${auth.token}` },
         });
-        setCustomerData(response.data);
+        setCustomerData(response.data); 
       } catch (error) {
         console.error('Error fetching customer data:', error);
       }
