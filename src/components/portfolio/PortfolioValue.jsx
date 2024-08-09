@@ -2,14 +2,14 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
 
-const PortfolioValue = () => {
+export const usePortfolioData = () => {
   const { auth } = useContext(AuthContext);
-  const [portfolioValue, setPortfolioValue] = useState(0);
+  const [portfolioData, setPortfolioData] = useState({ assets: [], trades: [], portfolioValue: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPortfolioValue = async () => {
+    const fetchPortfolioData = async () => {
       if (auth.isAuthenticated) {
         try {
           const portfolioResponse = await axios.get('https://crypto-trader-server.onrender.com/api/portfolio', {
@@ -39,7 +39,7 @@ const PortfolioValue = () => {
             return total + assetValue;
           }, 0);
 
-          setPortfolioValue(totalValue);
+          setPortfolioData({ assets, trades, portfolioValue: totalValue });
           setIsLoading(false);
         } catch (error) {
           console.error('Error fetching portfolio or trades data:', error);
@@ -49,17 +49,8 @@ const PortfolioValue = () => {
       }
     };
 
-    fetchPortfolioValue();
+    fetchPortfolioData();
   }, [auth.isAuthenticated, auth.token]);
 
-  if (isLoading) return <p>Loading portfolio value...</p>;
-  if (error) return <p>{error}</p>;
-
-  return (
-    <div>
-      <p>Portfolio Value: <span className="highlight">${portfolioValue.toFixed(2)}</span></p>
-    </div>
-  );
+  return { portfolioData, isLoading, error };
 };
-
-export default PortfolioValue;

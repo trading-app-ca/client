@@ -12,10 +12,10 @@ const PortfolioAllocationChart = ({ assets }) => {
     const chartInstance = new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: assets.map(asset => asset.asset),
+        labels: assets.map(asset => asset.name),
         datasets: [
           {
-            data: assets.map(asset => asset.quantity * asset.currentPrice),
+            data: assets.map(asset => asset.quantityHeld * asset.currentPrice),
             backgroundColor: [
               '#FF6384',
               '#36A2EB',
@@ -53,10 +53,6 @@ const PortfolioAllocationChart = ({ assets }) => {
       chartInstance.destroy();
     };
   }, [assets]);
-
-  if (!assets || assets.length === 0) {
-    return <p>No asset allocation data available.</p>;
-  }
 
   return (
     <div className="portfolio-allocation-chart">

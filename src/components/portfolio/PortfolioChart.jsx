@@ -1,13 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
-
-// Calculate portfolio value over time based on trades
+import { usePortfolioData } from './PortfolioValue'; 
 const calculatePortfolioValue = (initialBalance, trades) => {
-  if (!initialBalance || !trades || trades.length === 0) {
-    console.error('Missing or empty initialBalance or trades:', { initialBalance, trades });
-    return [];
-  }
-
   const values = [];
   let currentBalance = initialBalance;
 
@@ -15,35 +9,27 @@ const calculatePortfolioValue = (initialBalance, trades) => {
     const { type, quantity, price, date } = trade;
     const tradeValue = quantity * price;
 
-    // Adjust balance based on trade type
     if (type === 'buy') {
       currentBalance -= tradeValue;
     } else if (type === 'sell') {
       currentBalance += tradeValue;
     }
 
-    // Record the value at each point in time
     values.push({ date: new Date(date), value: currentBalance });
   });
 
   return values;
 };
 
-const PortfolioChart = ({ portfolioData }) => {
+const PortfolioChart = () => {
   const chartRef = useRef(null);
+  const { portfolioData, isLoading, error } = usePortfolioData();
 
   useEffect(() => {
-    console.log('Portfolio Data Received:', portfolioData);
+    if (isLoading || error) return;
 
-    if (!portfolioData || !portfolioData.assets || !portfolioData.trades) {
-      console.error('Incomplete portfolio data:', portfolioData);
-      return;
-    }
-
-    const initialBalance = portfolioData.balance || 0;
-
-    // Calculate portfolio values over time
-    const portfolioValuesOverTime = calculatePortfolioValue(initialBalance, portfolioData.trades);
+    const { portfolioValue, trades } = portfolioData;
+    const portfolioValuesOverTime = calculatePortfolioValue(portfolioValue, trades);
 
     if (portfolioValuesOverTime.length === 0) {
       console.warn('No portfolio values to display.');
@@ -52,9 +38,6 @@ const PortfolioChart = ({ portfolioData }) => {
 
     const labels = portfolioValuesOverTime.map(point => point.date.toISOString().split('T')[0]);
     const values = portfolioValuesOverTime.map(point => point.value);
-
-    console.log('Chart Labels:', labels);
-    console.log('Chart Values:', values);
 
     const ctx = chartRef.current.getContext('2d');
     const chartInstance = new Chart(ctx, {
@@ -96,10 +79,11 @@ const PortfolioChart = ({ portfolioData }) => {
     return () => {
       chartInstance.destroy();
     };
-  }, [portfolioData]);
+  }, [portfolioData, isLoading, error]);
 
-  // Error handling: display a message if necessary data is missing
-  if (!portfolioData || !portfolioData.assets || !portfolioData.trades || portfolioData.trades.length === 0) {
+  if (isLoading) return <p>Loading portfolio chart...</p>;
+  if (error) return <p>{error}</p>;
+  if (!portfolioData.trades || portfolioData.trades.length === 0) {
     return <p>No portfolio data to display.</p>;
   }
 

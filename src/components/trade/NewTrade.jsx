@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../common/Card';
-import { fakeCustomerData } from '../../data'; 
 
-const NewTrade = () => {
-  const [orderType, setOrderType] = useState('Buy');
-  const [cryptocurrency, setCryptocurrency] = useState('BTCUSDT');
-  const [cryptocurrencies, setCryptocurrencies] = useState([]);
-  const [quantity, setQuantity] = useState('');
-  const [price, setPrice] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [balance, setBalance] = useState(fakeCustomerData.balance);
-  const [holdings, setHoldings] = useState(
-    fakeCustomerData.assets.reduce((acc, asset) => {
-      acc[`${asset.symbol}USDT`] = asset.quantityHeld;
-      return acc;
-    }, {})
-  );
-  const [tradeHistory, setTradeHistory] = useState(fakeCustomerData.recentTrades);
+const NewTrade = ({ orderType, setOrderType, cryptocurrency, setCryptocurrency, quantity, setQuantity, handleSubmit, balance, holdings }) => {
+  const [localCryptocurrencies, setLocalCryptocurrencies] = useState([]);
+  const [localPrice, setLocalPrice] = useState(0);
+  const [localTotal, setLocalTotal] = useState(0);
 
   useEffect(() => {
     fetch('https://api.binance.com/api/v3/exchangeInfo')
@@ -25,76 +13,39 @@ const NewTrade = () => {
         const symbols = data.symbols
           .filter(symbol => symbol.quoteAsset === 'USDT')
           .map(symbol => symbol.symbol);
-        setCryptocurrencies(symbols);
-        setCryptocurrency(symbols[0]);
+        setLocalCryptocurrencies(symbols);
+        setCryptocurrency(symbols[0] || 'BTCUSDT');
       })
       .catch(error => console.error('Error fetching Binance data:', error));
-  }, []);
+  }, [setCryptocurrency]);
 
   useEffect(() => {
     if (cryptocurrency) {
       fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${cryptocurrency}`)
         .then(response => response.json())
         .then(data => {
-          setPrice(parseFloat(data.price));
+          setLocalPrice(parseFloat(data.price));
         })
         .catch(error => console.error('Error fetching price data:', error));
     }
   }, [cryptocurrency]);
 
   useEffect(() => {
-    if (quantity && price) {
-      setTotal(quantity * price);
+    if (quantity && localPrice) {
+      setLocalTotal(quantity * localPrice);
     }
-  }, [quantity, price]);
+  }, [quantity, localPrice]);
 
   const handleOrderTypeChange = (e) => setOrderType(e.target.value);
 
   const handleCryptocurrencyChange = (e) => {
     setCryptocurrency(e.target.value);
-    setPrice(0); 
+    setLocalPrice(0); 
     setQuantity(''); 
-    setTotal(0); 
+    setLocalTotal(0); 
   };
 
   const handleQuantityChange = (e) => setQuantity(e.target.value);
-
-  const handleSubmit = () => {
-    if (quantity && price) {
-      const currentDate = new Date().toISOString().split('T')[0];
-      const orderTotal = quantity * price;
-
-      if (orderType === 'Buy' && orderTotal <= balance) {
-        setBalance(balance - orderTotal);
-        setHoldings(prevHoldings => ({
-          ...prevHoldings,
-          [cryptocurrency]: (prevHoldings[cryptocurrency] || 0) + parseFloat(quantity)
-        }));
-        setTradeHistory(prevHistory => [
-          ...prevHistory,
-          { date: currentDate, type: 'Buy', symbol: cryptocurrency, quantity: parseFloat(quantity), price, total: orderTotal }
-        ]);
-        alert('Order placed successfully');
-      } else if (orderType === 'Sell' && quantity <= (holdings[cryptocurrency] || 0)) {
-        setBalance(balance + orderTotal);
-        setHoldings(prevHoldings => ({
-          ...prevHoldings,
-          [cryptocurrency]: (prevHoldings[cryptocurrency] || 0) - parseFloat(quantity)
-        }));
-        setTradeHistory(prevHistory => [
-          ...prevHistory,
-          { date: currentDate, type: 'Sell', symbol: cryptocurrency, quantity: parseFloat(quantity), price, total: orderTotal }
-        ]);
-        alert('Order placed successfully');
-      } else {
-        alert('Insufficient balance or holdings');
-        return;
-      }
-
-      setQuantity(''); 
-      setTotal(0); 
-    }
-  };
 
   return (
     <Card title="Place Your Order">
@@ -118,14 +69,20 @@ const NewTrade = () => {
           </label>
         </div>
         <div className="amount-select">
-            <label htmlFor="cryptocurrency">Select Cryptocurrency:</label>
-                <select id="cryptocurrency" name="cryptocurrency" className="select-input" value={cryptocurrency} onChange={handleCryptocurrencyChange}>
-                    {cryptocurrencies.map(symbol => (
-                    <option key={symbol} value={symbol}>
-                        {symbol.replace('USDT', '')}
-                    </option>
-                    ))}
-                </select>
+          <label htmlFor="cryptocurrency">Select Cryptocurrency:</label>
+          <select 
+            id="cryptocurrency" 
+            name="cryptocurrency" 
+            className="select-input" 
+            value={cryptocurrency} 
+            onChange={handleCryptocurrencyChange}
+          >
+            {localCryptocurrencies.map(symbol => (
+              <option key={symbol} value={symbol}>
+                {symbol.replace('USDT', '')}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="amount-input">
@@ -139,12 +96,23 @@ const NewTrade = () => {
           </label>
         </div>
         
-        <p className="total">Total: <span className="highlight">${total.toFixed(2)}</span></p>
+        <p className="total">Total: <span className="highlight">${localTotal.toFixed(2)}</span></p>
         <button className="btn lgt-btn confirm-button" onClick={handleSubmit}>
           Submit
         </button>
         <p className="balance">Balance: <span className="highlight">${balance.toFixed(2)}</span></p>
-        <p className="holdings">Holdings: <span className="highlight">{holdings[cryptocurrency] || 0} {cryptocurrency.replace('USDT', '')}</span></p>
+        <div className="assets">
+          <p className="assets-title"><strong>Assets:</strong></p>
+          {holdings.length > 0 ? (
+            holdings.map(asset => (
+              <p key={asset._id}>
+                {asset.asset}: <span className="highlight">{asset.quantity}</span>
+              </p>
+            ))
+          ) : (
+            <p>No assets available.</p>
+          )}
+        </div>
       </div>
     </Card>
   );

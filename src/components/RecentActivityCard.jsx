@@ -1,24 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
 import Card from './common/Card';
+import { AuthContext } from '../contexts/AuthContext';
 
-const RecentActivityCard = ({ portfolioData }) => {
-  // Check if portfolioData is defined and has transactions and trades arrays
-  const transactions = portfolioData?.transactions || [];
-  const trades = portfolioData?.trades || [];
+const RecentActivityCard = () => {
+  const { auth } = useContext(AuthContext);
+  const [transactions, setTransactions] = useState([]);
+  const [trades, setTrades] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchActivityData = async () => {
+      try {
+        const transactionsResponse = await axios.get('https://crypto-trader-server.onrender.com/api/transactions', {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        });
+        const tradesResponse = await axios.get('https://crypto-trader-server.onrender.com/api/trades', {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        });
+
+        setTransactions(transactionsResponse.data);
+        setTrades(tradesResponse.data);
+      } catch (error) {
+        console.error('Error fetching recent activity:', error);
+        setError('Failed to load recent activity.');
+      }
+    };
+
+    fetchActivityData();
+  }, [auth.token]);
 
   // Map transactions to the desired format
   const mappedTransactions = transactions.map(tx => ({
     date: new Date(tx.date),
     type: tx.type,
     amount: tx.amount,
-    asset: null // Transactions don't have an associated asset
+    asset: null
   }));
 
-  // Map trades to the desired format
   const mappedTrades = trades.map(trade => ({
     date: new Date(trade.date),
     type: trade.type === 'buy' ? 'Buy' : 'Sell',
-    amount: trade.quantity * trade.price, // Calculate the total value of the trade
+    amount: trade.quantity * trade.price,
     asset: trade.asset
   }));
 
@@ -30,7 +53,9 @@ const RecentActivityCard = ({ portfolioData }) => {
 
   return (
     <Card title="Recent Activity" className="transaction-details">
-      {recentActivity.length > 0 ? (
+      {error ? (
+        <p>{error}</p>
+      ) : recentActivity.length > 0 ? (
         recentActivity.map((activity, index) => (
           <div key={index}>
             <p>
