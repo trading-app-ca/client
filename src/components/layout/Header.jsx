@@ -4,6 +4,7 @@ import { FaBars } from 'react-icons/fa';
 import MobileDropdown from './MobileDropdown';
 import { authLinks } from '../common/AuthLinks';
 import { AuthContext } from '../../contexts/AuthContext';
+import PortfolioValue from '../portfolio/PortfolioValue';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,7 +34,6 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-
   return (
     <header>
       <div className="logo">
@@ -50,16 +50,16 @@ const Header = () => {
         isAuth={isAuthenticated} 
       />
 
-        {isAuthenticated && user && (
+      {isAuthenticated && user && (
         <div className="auth-info">
           <h2>Welcome, <span className="highlight">{user.firstName} {user.lastName}.</span></h2>
           <p>Balance: <span className="highlight">${(user.balance !== undefined ? user.balance.toFixed(2) : 'N/A')}</span></p>
-          <p>Portfolio Value: <span className="highlight">${(user.portfolioValue !== undefined ? user.portfolioValue.toFixed(2) : 'N/A')}</span></p>
+          <PortfolioValue /> 
         </div>
       )}
 
       <nav className="desktop-nav">
-      {!isAuthenticated && (
+        {!isAuthenticated && (
           <ul>
             <li><Link to="/">Home</Link></li>
             <li><a onClick={() => handleScroll('about')}>About</a></li>

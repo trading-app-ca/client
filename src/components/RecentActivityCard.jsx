@@ -1,21 +1,28 @@
 import React from 'react';
 import Card from './common/Card';
 
-const RecentActivityCard = ({ recentTransactions = [], recentTrades = [] }) => {
-  const mappedTransactions = recentTransactions.map(tx => ({
-    date: new Date(tx.date.split('/').reverse().join('-')),
+const RecentActivityCard = ({ portfolioData }) => {
+  // Check if portfolioData is defined and has transactions and trades arrays
+  const transactions = portfolioData?.transactions || [];
+  const trades = portfolioData?.trades || [];
+
+  // Map transactions to the desired format
+  const mappedTransactions = transactions.map(tx => ({
+    date: new Date(tx.date),
     type: tx.type,
     amount: tx.amount,
-    asset: tx.asset
+    asset: null // Transactions don't have an associated asset
   }));
 
-  const mappedTrades = recentTrades.map(trade => ({
-    date: new Date(trade.date.split('/').reverse().join('-')),
-    type: trade.action === 'Buy' ? 'Buy' : 'Sell',
-    amount: trade.total,
-    asset: trade.pair
+  // Map trades to the desired format
+  const mappedTrades = trades.map(trade => ({
+    date: new Date(trade.date),
+    type: trade.type === 'buy' ? 'Buy' : 'Sell',
+    amount: trade.quantity * trade.price, // Calculate the total value of the trade
+    asset: trade.asset
   }));
 
+  // Combine and sort by date, take the top 4 recent activities
   const recentActivity = [
     ...mappedTransactions,
     ...mappedTrades
@@ -26,11 +33,17 @@ const RecentActivityCard = ({ recentTransactions = [], recentTrades = [] }) => {
       {recentActivity.length > 0 ? (
         recentActivity.map((activity, index) => (
           <div key={index}>
-            <p><strong>{activity.type}:</strong> <span className="highlight">${activity.amount.toFixed(2)} <em>({activity.asset})</em></span></p>
+            <p>
+              <strong>{activity.type}:</strong> 
+              <span className="highlight">
+                ${activity.amount.toFixed(2)} 
+                {activity.asset && <em> ({activity.asset})</em>}
+              </span>
+            </p>
           </div>
         ))
       ) : (
-        <p>No current history.</p>
+        <p>No recent activity.</p>
       )}
     </Card>
   );
