@@ -113,7 +113,7 @@ const Dashboard = () => {
           <p>ADA: <span className="highlight">${marketData.ADA}</span></p>
         </Card>
 
-        <RecentActivityCard portfolioData={combinedPortfolioData} />
+        <RecentActivityCard />
       </div>
 
       <Card title="Your Portfolio">

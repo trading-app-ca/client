@@ -6,11 +6,24 @@ const TransactionHistory = ({ transactions, currentPage, itemsPerPage, setCurren
   const [filterType, setFilterType] = useState('all');
   const [itemsPerPageOption, setItemsPerPageOption] = useState(itemsPerPage);
 
-  const sortedTransactions = transactions
-    .filter(transaction => filterType === 'all' ? true : transaction.type.toLowerCase() === filterType)
-    .sort((a, b) => 
-      sortOrder === 'newest' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date)
-    );
+  const parseDate = (dateStr) => new Date(dateStr); // Use the actual date string directly
+
+  // Error handling: Display a message if transactions data is empty
+  if (!transactions || transactions.length === 0) {
+    return <Card title="Transaction History"><p>No transaction history to display.</p></Card>;
+  }
+
+  const filteredTransactions = transactions.filter(transaction =>
+    filterType === 'all' ? true : transaction.type.toLowerCase() === filterType
+  );
+
+  if (filteredTransactions.length === 0) {
+    return <Card title="Transaction History"><p>No transactions match the selected filter.</p></Card>;
+  }
+
+  const sortedTransactions = filteredTransactions.sort((a, b) => 
+    sortOrder === 'newest' ? parseDate(b.date) - parseDate(a.date) : parseDate(a.date) - parseDate(b.date)
+  );
 
   const handleItemsPerPageChange = (e) => {
     const value = e.target.value === 'all' ? sortedTransactions.length : parseInt(e.target.value);
@@ -21,7 +34,7 @@ const TransactionHistory = ({ transactions, currentPage, itemsPerPage, setCurren
   const currentTransactions = sortedTransactions.slice((currentPage - 1) * itemsPerPageOption, currentPage * itemsPerPageOption);
 
   return (
-    <Card title="Transactions History">
+    <Card title="Transaction History">
       <div className="trade-history-controls">
         <div className="sort-dropdown">
           <label htmlFor="sortOrder">Sort by: </label>
@@ -50,17 +63,13 @@ const TransactionHistory = ({ transactions, currentPage, itemsPerPage, setCurren
         </div>
       </div>
 
-      {currentTransactions.length > 0 ? (
-        <ul className="trade-history-list">
-          {currentTransactions.map((transaction, index) => (
-            <li key={index} className="trade-history-item">
-              {new Date(transaction.date).toLocaleString()}: {transaction.type} ${transaction.amount.toFixed(2)}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No transaction history</p>
-      )}
+      <ul className="trade-history-list">
+        {currentTransactions.map((transaction, index) => (
+          <li key={index} className="trade-history-item">
+            {new Date(transaction.date).toLocaleDateString('en-AU')}: {transaction.type} ${transaction.amount.toFixed(2)}
+          </li>
+        ))}
+      </ul>
 
       <div className="pagination">
         {currentPage > 1 && (

@@ -7,13 +7,28 @@ const TradeHistory = ({ trades, currentPage, itemsPerPage, setCurrentPage }) => 
   const [itemsPerPageOption, setItemsPerPageOption] = useState(itemsPerPage);
 
   const parseDate = (dateStr) => {
-    const [day, month, year] = dateStr.split('/');
+    const [year, month, day] = dateStr.split('-');
     return new Date(`${year}-${month}-${day}`);
   };
 
+  const formatToAusDate = (dateObj) => {
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-based
+    const year = dateObj.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  if (!trades || trades.length === 0) {
+    return <Card title="Trade History"><p>No trade history to display.</p></Card>;
+  }
+
   const filteredTrades = trades.filter(trade =>
-    filterType === 'all' ? true : trade.action.toLowerCase() === filterType
+    filterType === 'all' ? true : trade.type.toLowerCase() === filterType
   );
+
+  if (filteredTrades.length === 0) {
+    return <Card title="Trade History"><p>No trades match the selected filter.</p></Card>;
+  }
 
   const sortedTrades = filteredTrades.sort((a, b) => 
     sortOrder === 'newest' ? parseDate(b.date) - parseDate(a.date) : parseDate(a.date) - parseDate(b.date)
@@ -60,7 +75,7 @@ const TradeHistory = ({ trades, currentPage, itemsPerPage, setCurrentPage }) => 
       <ul className="trade-history-list">
         {currentTrades.map((trade, index) => (
           <li key={index} className="trade-history-item">
-            {trade.date}: {trade.action} {trade.amount} {trade.pair.replace('USD', '')} at 
+            {formatToAusDate(parseDate(trade.date))}: {trade.type} {trade.quantity} {trade.asset} at 
             <span className="highlight trade-price"> ${trade.price.toFixed(2)}</span>
           </li>
         ))}
