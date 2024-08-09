@@ -6,8 +6,10 @@ import RecentActivityCard from '../components/RecentActivityCard';
 import { AuthContext } from '../contexts/AuthContext';
 
 const Dashboard = () => {
-  const { auth } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext); 
   const [customerData, setCustomerData] = useState(null);
+  const [portfolioData, setPortfolioData] = useState(null);
+  const [tradesData, setTradesData] = useState(null);
   const [marketData, setMarketData] = useState({
     BTC: 0,
     ETH: 0,
@@ -16,18 +18,54 @@ const Dashboard = () => {
     ADA: 0,
   });
 
+  // Fetch customer data from the API
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
         const response = await axios.get('https://crypto-trader-server.onrender.com/api/user', {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
         });
-        setCustomerData(response.data); 
+        setCustomerData(response.data);
       } catch (error) {
         console.error('Error fetching customer data:', error);
       }
     };
 
+    const fetchPortfolioData = async () => {
+      try {
+        const response = await axios.get('https://crypto-trader-server.onrender.com/api/portfolio', {
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        });
+        setPortfolioData(response.data);
+      } catch (error) {
+        console.error('Error fetching portfolio data:', error);
+      }
+    };
+
+    const fetchTradesData = async () => {
+      try {
+        const response = await axios.get('https://crypto-trader-server.onrender.com/api/trades', {
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        });
+        setTradesData(response.data);
+      } catch (error) {
+        console.error('Error fetching trades data:', error);
+      }
+    };
+
+    fetchCustomerData();
+    fetchPortfolioData();
+    fetchTradesData();
+  }, [auth.token]);
+
+  // Fetch market data from the API
+  useEffect(() => {
     const fetchMarketData = async () => {
       try {
         const [btcResponse, ethResponse, ltcResponse, bnbResponse, adaResponse] = await Promise.all([
@@ -50,12 +88,18 @@ const Dashboard = () => {
       }
     };
 
-    fetchCustomerData();
     fetchMarketData();
-  }, [auth.token]);
+  }, []);
 
-  if (!customerData) {
-    return <div>Loading...</div>;
+  // Combine portfolio data and trades data to pass to PortfolioChart
+  const combinedPortfolioData = {
+    balance: customerData ? customerData.balance : 0, 
+    assets: portfolioData ? portfolioData.assets : [],
+    trades: tradesData || [], 
+  };
+
+  if (!customerData || !portfolioData || !tradesData) {
+    return <p>Loading...</p>; // Show loading while data is being fetched
   }
 
   return (
@@ -69,15 +113,12 @@ const Dashboard = () => {
           <p>ADA: <span className="highlight">${marketData.ADA}</span></p>
         </Card>
 
-        <RecentActivityCard
-          recentTransactions={customerData.recentTransactions}
-          recentTrades={customerData.recentTrades}
-        />
+        <RecentActivityCard portfolioData={combinedPortfolioData} />
       </div>
 
       <Card title="Your Portfolio">
-        <PortfolioChart portfolioData={customerData.portfolioHistory} />
-      </Card>
+        <PortfolioChart portfolioData={combinedPortfolioData} />
+      </Card> 
     </div>
   );
 };
