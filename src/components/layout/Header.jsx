@@ -1,17 +1,24 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { FaBars } from 'react-icons/fa';
 import MobileDropdown from './MobileDropdown';
-import { authLinks } from '../common/AuthLinks';
-import { AuthContext } from '../../contexts/AuthContext';
+import { authLinks, guestLinks } from '../common/NavLinks';
+import { logout } from '../../redux/authSlice';
 import { usePortfolioData } from '../portfolio/PortfolioValue';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { auth, logout } = useContext(AuthContext); 
-  const { isAuthenticated, user } = auth;
   const navigate = useNavigate();
-  const { portfolioData, isLoading, error } = usePortfolioData(); 
+  const dispatch = useDispatch();
+
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { portfolioData, isLoading, error } = usePortfolioData();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+  };
 
   const handleScroll = (section) => {
     navigate('/');
@@ -22,14 +29,6 @@ const Header = () => {
       }
     }, 100);
   };
-
-  const guestLinks = [
-    { path: '/', label: 'Home' },
-    { path: '#about', label: 'About', onClick: () => handleScroll('about') },
-    { path: '#how-it-works', label: 'How It Works', onClick: () => handleScroll('how-it-works') },
-    { path: '/login', label: 'Login' },
-    { path: '/register', label: 'Sign Up' },
-  ];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -47,7 +46,7 @@ const Header = () => {
       <MobileDropdown 
         isOpen={isMenuOpen} 
         onClose={toggleMenu} 
-        links={isAuthenticated ? authLinks : guestLinks} 
+        links={isAuthenticated ? authLinks : guestLinks.map(link => ({ ...link, onClick: link.onClick ? () => link.onClick(handleScroll) : null }))}
         isAuth={isAuthenticated} 
       />
 
@@ -66,16 +65,18 @@ const Header = () => {
       <nav className="desktop-nav">
         {!isAuthenticated && (
           <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><a onClick={() => handleScroll('about')}>About</a></li>
-            <li><a onClick={() => handleScroll('how-it-works')}>How It Works</a></li>
+            {guestLinks.map(link => (
+              <li key={link.path}>
+                <Link to={link.path} onClick={link.onClick ? () => link.onClick(handleScroll) : null}>{link.label}</Link>
+              </li>
+            ))}
           </ul>
         )}
       </nav>
 
       {isAuthenticated ? (
         <div className="auth-buttons">
-          <button onClick={logout} className="logout btn">Logout</button>
+          <button onClick={handleLogout} className="logout btn">Logout</button>
         </div>
       ) : (
         <div className="auth-buttons">

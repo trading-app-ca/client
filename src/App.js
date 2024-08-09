@@ -1,6 +1,8 @@
-import React from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import AuthProvider from './contexts/AuthContext';
+import React, { useEffect } from 'react';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import store from './redux/store'; 
+import { initializeAuth, fetchUserData } from './redux/authSlice';
 import AuthUserLayout from './components/layout/AuthUserLayout';
 import GuestLayout from './components/layout/GuestLayout';
 import LoginSignupLayout from './components/layout/LoginSignupLayout';
@@ -42,6 +44,10 @@ const router = createBrowserRouter([
         path: 'register',
         element: <Register />,
       },
+      {
+        path: '*',
+        element: <Navigate to="/dashboard" replace />,
+      },
     ],
   },
   {
@@ -76,11 +82,25 @@ const router = createBrowserRouter([
   },
 ]);
 
+function AppInitialiser() {
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(initializeAuth());
+    if (isAuthenticated) {
+      dispatch(fetchUserData());
+    }
+  }, [dispatch, isAuthenticated]);
+
+  return <RouterProvider router={router} />;
+}
+
 function App() {
   return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <Provider store={store}>
+      <AppInitialiser />
+    </Provider>
   );
 }
 

@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AuthForm from '../components/AuthForm';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser } from '../redux/authSlice';
 
 const Register = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { status, error } = useSelector((state) => state.auth);
 
   const handleRegister = async (event) => {
     event.preventDefault();
-    
+
     const formData = new FormData(event.target);
     const data = {
       firstName: formData.get('firstName'),
@@ -18,19 +20,16 @@ const Register = () => {
       password: formData.get('password'),
     };
 
-    try {
-      const response = await axios.post('https://crypto-trader-server.onrender.com/api/auth/register', data);
-      console.log('Registration successful:', response.data);
+    const result = dispatch(registerUser(data));
+
+    if (result.type === 'auth/registerUser/fulfilled') {
       navigate('/login');
-    } catch (error) {
-      console.error('Error during registration:', error);
-      setError(error.response?.data?.msg || 'An error occurred during registration');
     }
   };
 
   return (
     <>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {status === 'failed' && <p style={{ color: 'red' }}>{error}</p>}
       <AuthForm isRegister={true} handleSubmit={handleRegister} />
     </>
   );

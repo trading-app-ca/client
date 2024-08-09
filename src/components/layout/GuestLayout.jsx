@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Footer from './Footer';
-import { AuthContext } from '../../contexts/AuthContext';
 
 const GuestLayout = () => {
-  const { auth } = useContext(AuthContext);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  if (auth.isAuthenticated) {
+  if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
 

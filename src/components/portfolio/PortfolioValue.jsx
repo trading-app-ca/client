@@ -1,32 +1,23 @@
-import React, { useEffect, useState, useContext } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import ApiManager from '../../apimanager/ApiManager';
 
 export const usePortfolioData = () => {
-  const { auth } = useContext(AuthContext);
+  const { token, isAuthenticated } = useSelector((state) => state.auth);
   const [portfolioData, setPortfolioData] = useState({ assets: [], trades: [], portfolioValue: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPortfolioData = async () => {
-      if (auth.isAuthenticated) {
+      if (isAuthenticated && token) {
         try {
-          const portfolioResponse = await axios.get('https://crypto-trader-server.onrender.com/api/portfolio', {
-            headers: {
-              Authorization: `Bearer ${auth.token}`,
-            },
-          });
-          const tradesResponse = await axios.get('https://crypto-trader-server.onrender.com/api/trades', {
-            headers: {
-              Authorization: `Bearer ${auth.token}`,
-            },
-          });
+          const portfolioResponse = await ApiManager.getPortfolioData();
+          const tradesResponse = await ApiManager.getTradesData();
 
-          const assets = portfolioResponse.data.assets;
-          const trades = tradesResponse.data;
+          const assets = portfolioResponse.assets;
+          const trades = tradesResponse;
 
-          // Calculate total portfolio value based on current assets and trades
           const totalValue = assets.reduce((total, asset) => {
             const assetTrades = trades.filter(trade => trade.asset === asset.asset);
             let assetValue = asset.quantity * asset.averagePurchasePrice;
@@ -50,7 +41,7 @@ export const usePortfolioData = () => {
     };
 
     fetchPortfolioData();
-  }, [auth.isAuthenticated, auth.token]);
+  }, [isAuthenticated, token]);
 
   return { portfolioData, isLoading, error };
 };
