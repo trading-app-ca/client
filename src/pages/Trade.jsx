@@ -1,128 +1,123 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import TradeHistory from '../components/trade/TradeHistory';
 import NewTrade from '../components/trade/NewTrade';
 import TradingChart from '../components/trade/TradingChart';
-import { AuthContext } from '../contexts/AuthContext'; // Importing AuthContext to get the user token
+import { fetchUserData } from '../redux/dashboardSlice';
+import { fetchTradeHistory } from '../redux/tradeSlice';
+import { fetchPortfolioData } from '../redux/portfolioSlice';
+import ApiManager from '../apimanager/ApiManager';
 
 const Trade = () => {
-  const { auth } = useContext(AuthContext);  // Destructure to get auth state from AuthContext
+  const dispatch = useDispatch();
+  const { userData } = useSelector((state) => state.dashboard);
+  const { trades } = useSelector((state) => state.trade);
+  const { portfolioData } = useSelector((state) => state.portfolio);
+
   const [orderType, setOrderType] = useState('Buy');
   const [cryptocurrency, setCryptocurrency] = useState('BTCUSDT');
   const [cryptocurrencies, setCryptocurrencies] = useState([]);
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState(0);
   const [total, setTotal] = useState(0);
-
   const [balance, setBalance] = useState(0);
-  const [holdings, setHoldings] = useState([]);
+  const [assets, setAssets] = useState([]);
   const [tradeHistory, setTradeHistory] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   useEffect(() => {
-    const fetchCustomerData = async () => {
-      try {
-        const response = await axios.get('https://crypto-trader-server.onrender.com/api/portfolio', {
-          headers: {
-            Authorization: `Bearer ${auth.token}`
-          }
-        });
+    dispatch(fetchUserData());
+    dispatch(fetchPortfolioData());
+    dispatch(fetchTradeHistory());
+  }, [dispatch]);
 
-        const { user, portfolio, trades } = response.data;
-        setBalance(user.balance);
-        setHoldings(portfolio.assets);
-        setTradeHistory(trades || []);
+  useEffect(() => {
+    setBalance(userData?.balance || 0);
+    setAssets(portfolioData?.assets || []);
+    setTradeHistory(trades || []);
+  }, [userData, portfolioData, trades]);
+
+  useEffect(() => {
+    const fetchMarketInfo = async () => {
+      try {
+        const response = await fetch('https://api.binance.com/api/v3/exchangeInfo');
+        const data = await response.json();
+        const symbols = data.symbols.filter(symbol => symbol.quoteAsset === 'USDT').map(symbol => symbol.symbol);
+        setCryptocurrencies(symbols);
+        setCryptocurrency(symbols[0] || 'BTCUSDT');
       } catch (error) {
-        console.error('Error fetching customer data:', error);
+        console.error('Error fetching Binance data:', error);
       }
     };
 
-    fetchCustomerData();
-  }, [auth.token]);
-
-  useEffect(() => {
-    fetch('https://api.binance.com/api/v3/exchangeInfo')
-      .then(response => response.json())
-      .then(data => {
-        const symbols = data.symbols
-          .filter(symbol => symbol.quoteAsset === 'USDT')
-          .map(symbol => symbol.symbol);
-        setCryptocurrencies(symbols);
-        setCryptocurrency(symbols[0] || 'BTCUSDT');
-      })
-      .catch(error => console.error('Error fetching Binance data:', error));
+    fetchMarketInfo();
   }, []);
 
   useEffect(() => {
-    if (cryptocurrency) {
-      fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${cryptocurrency}`)
-        .then(response => response.json())
-        .then(data => {
-          setPrice(parseFloat(data.price));
-        })
-        .catch(error => console.error('Error fetching price data:', error));
-    }
+    const fetchPrice = async () => {
+      if (cryptocurrency) {
+        try {
+          const response = await ApiManager.getMarketData(cryptocurrency);
+          setPrice(parseFloat(response.price));
+        } catch (error) {
+          console.error('Error fetching price data:', error);
+        }
+      }
+    };
+
+    fetchPrice();
   }, [cryptocurrency]);
 
   useEffect(() => {
-    if (quantity && price) {
-      setTotal(quantity * price);
-    }
+    setTotal(quantity * price);
   }, [quantity, price]);
 
-  const handleSubmit = () => {
-    if (quantity && price) {
-      const currentDate = new Date().toISOString().split('T')[0];
-      const orderTotal = quantity * price;
+  const updatePortfolioAssets = (currentAssets, tradeData) => {
+    const { type, assetName, quantity } = tradeData;
+    const assetIndex = currentAssets.findIndex(asset => asset.asset === assetName);
 
-      const assetSymbol = cryptocurrency.replace('USDT', '');
-      const currentHolding = holdings.find(asset => asset.asset === assetSymbol);
-
-      if (orderType === 'Buy' && orderTotal <= balance) {
-        setBalance(balance - orderTotal);
-        setHoldings(prevHoldings => {
-          const updatedHoldings = prevHoldings.map(asset => {
-            if (asset.asset === assetSymbol) {
-              return {
-                ...asset,
-                quantity: asset.quantity + parseFloat(quantity)
-              };
-            }
-            return asset;
-          });
-          return updatedHoldings;
-        });
-        setTradeHistory(prevHistory => [
-          ...prevHistory,
-          { date: currentDate, asset: assetSymbol, type: 'buy', quantity: parseFloat(quantity), price, total: orderTotal }
-        ]);
-      } else if (orderType === 'Sell' && quantity <= (currentHolding ? currentHolding.quantity : 0)) {
-        setBalance(balance + orderTotal);
-        setHoldings(prevHoldings => {
-          const updatedHoldings = prevHoldings.map(asset => {
-            if (asset.asset === assetSymbol) {
-              return {
-                ...asset,
-                quantity: asset.quantity - parseFloat(quantity)
-              };
-            }
-            return asset;
-          });
-          return updatedHoldings;
-        });
-        setTradeHistory(prevHistory => [
-          ...prevHistory,
-          { date: currentDate, asset: assetSymbol, type: 'sell', quantity: parseFloat(quantity), price, total: orderTotal }
-        ]);
+    if (type === 'buy') {
+      if (assetIndex !== -1) {
+        currentAssets[assetIndex].quantity += quantity;
       } else {
-        alert('Insufficient balance or holdings');
-        return;
+        currentAssets.push({ asset: assetName, quantity });
       }
+    } else if (type === 'sell') {
+      if (assetIndex !== -1) {
+        currentAssets[assetIndex].quantity -= quantity;
+        if (currentAssets[assetIndex].quantity <= 0) {
+          currentAssets.splice(assetIndex, 1); 
+        }
+      }
+    }
 
-      setQuantity(''); 
-      setTotal(0);
-      alert('Order placed successfully');
+    return [...currentAssets];
+  };
+
+  const handleSubmit = async () => {
+    if (quantity && price) {
+      const assetName = cryptocurrency.replace('USDT', '');
+
+      const tradeData = {
+        type: orderType.toLowerCase(),
+        assetName,
+        quantity: parseFloat(quantity),
+        price: parseFloat(price),
+      };
+
+      try {
+        const response = await ApiManager.createTrade(tradeData);
+        setBalance(response.newBalance);
+        setAssets(updatePortfolioAssets(assets, tradeData));
+        setTradeHistory([...tradeHistory, response.trade]);
+        setQuantity('');
+        setTotal(0);
+        alert('Order placed successfully');
+      } catch (error) {
+        console.error('Error placing trade:', error);
+        alert('Failed to place trade.');
+      }
     }
   };
 
@@ -142,7 +137,7 @@ const Trade = () => {
           total={total}
           handleSubmit={handleSubmit}
           balance={balance}
-          holdings={holdings}
+          assets={assets}
         />
         <TradeHistory
           trades={tradeHistory}

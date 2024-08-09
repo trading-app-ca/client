@@ -1,36 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import TransactionHistory from '../components/TransactionHistory';
-import { AuthContext } from '../contexts/AuthContext'; 
+import { fetchTransactions } from '../redux/transactionSlice';
 
 const Transactions = () => {
-  const [transactions, setTransactions] = useState([]);
+  const dispatch = useDispatch();
+  const { transactions, isLoading, error } = useSelector((state) => state.transaction);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const itemsPerPage = 10; 
-  const { auth } = useContext(AuthContext);
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await axios.get('https://crypto-trader-server.onrender.com/api/transactions', {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        });
-        setTransactions(response.data);
-      } catch (error) {
-        setError('Error fetching transaction data.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    dispatch(fetchTransactions());
+  }, [dispatch]);
 
-    fetchTransactions();
-  }, [auth.token]);
-
-  if (loading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -40,11 +23,11 @@ const Transactions = () => {
 
   return (
     <div className="content-container">
-      <TransactionHistory 
-        transactions={transactions} 
-        currentPage={currentPage} 
-        itemsPerPage={itemsPerPage} 
-        setCurrentPage={setCurrentPage} 
+      <TransactionHistory
+        transactions={transactions}
+        currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
+        setCurrentPage={setCurrentPage}
       />
     </div>
   );
