@@ -6,9 +6,9 @@ const TransactionHistory = ({ transactions, currentPage, itemsPerPage, setCurren
   const [filterType, setFilterType] = useState('all');
   const [itemsPerPageOption, setItemsPerPageOption] = useState(itemsPerPage);
 
-  const parseDate = (dateStr) => new Date(dateStr); // Use the actual date string directly
+  const parseDate = (dateStr) => new Date(dateStr);
 
-  // Error handling: Display a message if transactions data is empty
+  // Display a message if there are no transactions
   if (!transactions || transactions.length === 0) {
     return <Card title="Transaction History"><p>No transaction history to display.</p></Card>;
   }
@@ -16,10 +16,6 @@ const TransactionHistory = ({ transactions, currentPage, itemsPerPage, setCurren
   const filteredTransactions = transactions.filter(transaction =>
     filterType === 'all' ? true : transaction.type.toLowerCase() === filterType
   );
-
-  if (filteredTransactions.length === 0) {
-    return <Card title="Transaction History"><p>No transactions match the selected filter.</p></Card>;
-  }
 
   const sortedTransactions = filteredTransactions.sort((a, b) => 
     sortOrder === 'newest' ? parseDate(b.date) - parseDate(a.date) : parseDate(a.date) - parseDate(b.date)
