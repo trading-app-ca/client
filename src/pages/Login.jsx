@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import AuthForm from '../components/AuthForm';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../redux/authSlice';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { status, error, isAuthenticated } = useSelector((state) => state.auth);
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    
+
     const formData = new FormData(event.target);
     const data = {
       email: formData.get('email'),
@@ -17,20 +19,26 @@ const Login = () => {
     };
 
     try {
-      const response = await axios.post('https://crypto-trader-server.onrender.com/api/auth/login', data);
+      const result = await dispatch(loginUser(data)).unwrap();
 
-      console.log('Login successful:', response.data);
-      localStorage.setItem('authToken', response.data.token);  
-      navigate('/dashboard'); 
+      // If login is successful, navigate to the dashboard
+      navigate('/dashboard');
     } catch (error) {
-      console.error('Error during login:', error);
-      setError(error.response?.data?.msg || 'An error occurred during login');
+      // If login fails, the error will be handled by Redux state
+      console.error('Login failed:', error);
     }
   };
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+
   return (
     <>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {status === 'failed' && <p style={{ color: 'red' }}>{error}</p>}
       <AuthForm isRegister={false} handleSubmit={handleLogin} />
     </>
   );

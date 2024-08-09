@@ -1,13 +1,13 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import { AuthContext } from '../../contexts/AuthContext';
 
 const AuthUserLayout = () => {
-  const { auth } = useContext(AuthContext);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  if (!auth.isAuthenticated) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

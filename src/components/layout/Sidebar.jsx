@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { authLinks } from '../common/AuthLinks';
+import { authLinks } from '../common/NavLinks'; 
 
 const Sidebar = () => {
   return (

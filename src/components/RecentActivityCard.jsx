@@ -1,26 +1,23 @@
-import React, { useEffect, useState, useContext } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import ApiManager from '../apimanager/ApiManager';
 import Card from './common/Card';
-import { AuthContext } from '../contexts/AuthContext';
 
 const RecentActivityCard = () => {
-  const { auth } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
   const [trades, setTrades] = useState([]);
   const [error, setError] = useState(null);
 
+  const token = useSelector((state) => state.auth.token);
+
   useEffect(() => {
     const fetchActivityData = async () => {
       try {
-        const transactionsResponse = await axios.get('https://crypto-trader-server.onrender.com/api/transactions', {
-          headers: { Authorization: `Bearer ${auth.token}` },
-        });
-        const tradesResponse = await axios.get('https://crypto-trader-server.onrender.com/api/trades', {
-          headers: { Authorization: `Bearer ${auth.token}` },
-        });
+        const transactionsResponse = await ApiManager.getTransactionsData();
+        const tradesResponse = await ApiManager.getTradesData();
 
-        setTransactions(transactionsResponse.data);
-        setTrades(tradesResponse.data);
+        setTransactions(transactionsResponse);
+        setTrades(tradesResponse);
       } catch (error) {
         console.error('Error fetching recent activity:', error);
         setError('Failed to load recent activity.');
@@ -28,9 +25,8 @@ const RecentActivityCard = () => {
     };
 
     fetchActivityData();
-  }, [auth.token]);
+  }, [token]);
 
-  // Map transactions to the desired format
   const mappedTransactions = transactions.map(tx => ({
     date: new Date(tx.date),
     type: tx.type,
@@ -45,7 +41,6 @@ const RecentActivityCard = () => {
     asset: trade.asset
   }));
 
-  // Combine and sort by date, take the top 4 recent activities
   const recentActivity = [
     ...mappedTransactions,
     ...mappedTrades

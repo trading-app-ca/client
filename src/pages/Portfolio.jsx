@@ -1,33 +1,37 @@
-import React, { useEffect, useState, useContext } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Card from '../components/common/Card';
 import CollapsibleSection from '../components/common/CollapsibleSection';
 import PortfolioChart from '../components/portfolio/PortfolioChart';
 import PortfolioAllocationChart from '../components/portfolio/PortfolioAllocationChart';
 import RecentActivityCard from '../components/RecentActivityCard';
-import { usePortfolioData } from '../components/portfolio/PortfolioValue';
+import { fetchPortfolioData } from '../redux/portfolioSlice';
+import ApiManager from '../apimanager/ApiManager';
 
 const Portfolio = () => {
-  const { portfolioData, isLoading, error } = usePortfolioData();
+  const dispatch = useDispatch();
+  const { assets, trades, portfolioValue, isLoading, error } = useSelector((state) => state.portfolio);
   const [marketData, setMarketData] = useState(null);
 
   useEffect(() => {
+    dispatch(fetchPortfolioData());
+
     const fetchMarketData = async () => {
       try {
         const [btcResponse, ethResponse, ltcResponse, bnbResponse, adaResponse] = await Promise.all([
-          axios.get('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),
-          axios.get('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT'),
-          axios.get('https://api.binance.com/api/v3/ticker/price?symbol=LTCUSDT'),
-          axios.get('https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT'),
-          axios.get('https://api.binance.com/api/v3/ticker/price?symbol=ADAUSDT'),
+          ApiManager.getMarketData('BTCUSDT'),
+          ApiManager.getMarketData('ETHUSDT'),
+          ApiManager.getMarketData('LTCUSDT'),
+          ApiManager.getMarketData('BNBUSDT'),
+          ApiManager.getMarketData('ADAUSDT'),
         ]);
 
         setMarketData({
-          BTC: parseFloat(btcResponse.data.price),
-          ETH: parseFloat(ethResponse.data.price),
-          LTC: parseFloat(ltcResponse.data.price),
-          BNB: parseFloat(bnbResponse.data.price),
-          ADA: parseFloat(adaResponse.data.price),
+          BTC: parseFloat(btcResponse.price),
+          ETH: parseFloat(ethResponse.price),
+          LTC: parseFloat(ltcResponse.price),
+          BNB: parseFloat(bnbResponse.price),
+          ADA: parseFloat(adaResponse.price),
         });
       } catch (error) {
         console.error('Error fetching market data:', error);
@@ -35,7 +39,7 @@ const Portfolio = () => {
     };
 
     fetchMarketData();
-  }, []);
+  }, [dispatch]);
 
   if (isLoading) {
     return <div>Loading data...</div>;
@@ -45,11 +49,9 @@ const Portfolio = () => {
     return <div>{error}</div>;
   }
 
-  if (!portfolioData || !marketData) {
+  if (!assets.length || !marketData) {
     return <div>Loading data...</div>;
   }
-
-  // Calculate asset overview
   const calculateAssetOverview = (assetSymbol, quantityHeld, averagePurchasePrice) => {
     const currentPrice = marketData[assetSymbol.toUpperCase()] || 0;
     const currentValue = currentPrice * quantityHeld;
@@ -59,7 +61,7 @@ const Portfolio = () => {
     return { currentPrice, currentValue, profitLoss, profitLossPercentage };
   };
 
-  const assetsWithValues = portfolioData.assets.map(asset => ({
+  const assetsWithValues = assets.map(asset => ({
     ...asset,
     ...calculateAssetOverview(asset.asset, asset.quantity, asset.averagePurchasePrice),
     name: asset.asset.toUpperCase(),
@@ -71,11 +73,11 @@ const Portfolio = () => {
     <div className="content-container">
       <div className="row">
         <Card title="Your Portfolio Overview">
-          <p><strong>Total Portfolio Value:</strong> <span className="highlight">${portfolioData.portfolioValue.toFixed(2)}</span></p>
-          <p><strong>Total Profit/Loss:</strong> <span className="highlight">${(portfolioData.portfolioValue - portfolioData.assets.reduce((acc, asset) => acc + asset.averagePurchasePrice * asset.quantity, 0)).toFixed(2)}</span></p>
+          <p><strong>Total Portfolio Value:</strong> <span className="highlight">${portfolioValue.toFixed(2)}</span></p>
+          <p><strong>Total Profit/Loss:</strong> <span className="highlight">${(portfolioValue - assets.reduce((acc, asset) => acc + asset.averagePurchasePrice * asset.quantity, 0)).toFixed(2)}</span></p>
         </Card>
 
-        <RecentActivityCard portfolioData={portfolioData} />
+        <RecentActivityCard portfolioData={{ assets, trades }} />
       </div>
 
       <Card title="Portfolio Allocation">
@@ -92,7 +94,7 @@ const Portfolio = () => {
             <p>Profit/Loss: <span className="highlight">${asset.profitLoss.toFixed(2)} ({asset.profitLossPercentage.toFixed(2)}%)</span></p>
 
             <CollapsibleSection title="Historical Performance">
-              <PortfolioChart portfolioData={portfolioData} />
+              <PortfolioChart portfolioData={{ assets, trades }} />
             </CollapsibleSection>
           </Card>
         ))}
