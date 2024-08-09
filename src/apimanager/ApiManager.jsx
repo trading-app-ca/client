@@ -18,6 +18,7 @@ class ApiManager {
   static getTransactionsData() {
     return ApiMethods.get(ENDPOINTS.GET_TRANSACTIONS);
   }
+
   static async getMarketData(symbol) {
     try {
       const response = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
@@ -27,7 +28,6 @@ class ApiManager {
       throw error;
     }
   }
-  
 
   static login(data) {
     return ApiMethods.post(ENDPOINTS.LOGIN, data);
