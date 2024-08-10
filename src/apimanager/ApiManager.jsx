@@ -7,6 +7,15 @@ class ApiManager {
     return ApiMethods.get(ENDPOINTS.GET_USER);
   }
 
+  static updateUserInfo(data) {
+    return ApiMethods.put(ENDPOINTS.GET_USER, data);
+  }
+
+  static deleteUser() {
+    return ApiMethods.delete(ENDPOINTS.GET_USER);
+  }
+
+
   static getPortfolioData() {
     return ApiMethods.get(ENDPOINTS.GET_PORTFOLIO);
   }
@@ -47,6 +56,9 @@ class ApiManager {
     return ApiMethods.post(ENDPOINTS.WITHDRAW_FUNDS, { amount });
   }
 
+  static verifyPassword(password) {
+    return ApiMethods.post(ENDPOINTS.VERIFY_PASSWORD, { password });
+  }
 
   static login(data) {
     return ApiMethods.post(ENDPOINTS.LOGIN, data);
@@ -56,5 +68,6 @@ class ApiManager {
     return ApiMethods.post(ENDPOINTS.REGISTER, data);
   }
 }
+  
 
 export default ApiManager;

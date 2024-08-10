@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserData, logout } from '../redux/authSlice'; 
 import Card from '../components/common/Card';
+import ApiManager from '../apimanager/ApiManager'; 
 
 const AccountSettings = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -9,7 +15,14 @@ const AccountSettings = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
 
-  const handleSaveProfile = (e) => {
+  useEffect(() => {
+    if (user) {
+      setFullName(`${user.firstName} ${user.lastName}`);
+      setEmail(user.email);
+    }
+  }, [user]);
+
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
     const validationErrors = {};
 
@@ -19,11 +32,20 @@ const AccountSettings = () => {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      alert('Profile information saved!');
+      const [firstName, lastName] = fullName.split(' ');
+
+      try {
+        await ApiManager.updateUserInfo({ firstName, lastName, email });
+        alert('Profile information saved!');
+        dispatch(fetchUserData());
+      } catch (error) {
+        alert('Error saving profile information.');
+        console.error(error);
+      }
     }
   };
 
-  const handleSavePassword = (e) => {
+  const handleSavePassword = async (e) => {
     e.preventDefault();
     const validationErrors = {};
 
@@ -34,7 +56,27 @@ const AccountSettings = () => {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      alert('Password changed successfully!');
+      try {
+        await ApiManager.verifyPassword(currentPassword);
+        await ApiManager.updateUserInfo({ password: newPassword });
+        alert('Password changed successfully!');
+      } catch (error) {
+        alert('Error changing password or incorrect current password.');
+        console.error(error);
+      }
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      try {
+        await ApiManager.deleteUser();
+        alert('Account deleted successfully.');
+        dispatch(logout()); 
+      } catch (error) {
+        alert('Error deleting account.');
+        console.error(error);
+      }
     }
   };
 
@@ -124,7 +166,7 @@ const AccountSettings = () => {
       <Card title="Delete Account">
         <p>Warning: Deleting your account will permanently remove all your data.</p>
         <div className="delete-button">
-          <button className="delete-button btn drk-btn">Delete</button>
+          <button onClick={handleDeleteAccount} className="delete-button btn drk-btn">Delete</button>
         </div>
       </Card>
     </div>

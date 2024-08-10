@@ -5,8 +5,13 @@ export const authLinks = [
   { path: '/transactions', label: 'Transactions' },
   { path: '/deposit-withdraw', label: 'Deposit/Withdraw' },
   { path: '/account-settings', label: 'Account Settings' },
-  { path: '/logout', label: 'Logout' },
+  {
+    path: '#',
+    label: 'Logout',
+    onClick: (openLogoutModal) => openLogoutModal(), 
+  },
 ];
+
 
 export const guestLinks = [
   { path: '/', label: 'Home' },

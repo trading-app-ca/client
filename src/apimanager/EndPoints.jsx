@@ -1,5 +1,6 @@
 const ENDPOINTS = {
     GET_USER: 'user',
+    VERIFY_PASSWORD: 'auth/verify-password',
     GET_PORTFOLIO: 'portfolio',
     GET_TRADES: 'trades',
     GET_TRANSACTIONS: 'transactions',

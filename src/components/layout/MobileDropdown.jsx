@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
 
-const MobileDropdown = ({ isOpen, onClose, links, isAuth }) => {
+const MobileDropdown = ({ isOpen, onClose, links, onLogout }) => {
   return (
     <div className={`mobile-menu ${isOpen ? 'show' : ''}`}>
       <div className="dropdown-menu-card">
@@ -11,7 +11,17 @@ const MobileDropdown = ({ isOpen, onClose, links, isAuth }) => {
           <ul className="dropdown-menu-links">
             {links.map((link, index) => (
               <li key={index}>
-                {isAuth ? (
+                {link.label === 'Logout' ? (
+                  <a
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onLogout(); // Call the logout modal open function
+                      onClose(); // Close the dropdown
+                    }}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
                   <NavLink
                     to={link.path}
                     className={({ isActive }) => (isActive ? 'active' : '')}
@@ -19,14 +29,6 @@ const MobileDropdown = ({ isOpen, onClose, links, isAuth }) => {
                   >
                     {link.label}
                   </NavLink>
-                ) : link.onClick ? (
-                  <a onClick={() => { link.onClick(); onClose(); }}>
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link to={link.path} onClick={onClose}>
-                    {link.label}
-                  </Link>
                 )}
               </li>
             ))}

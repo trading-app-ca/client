@@ -6,9 +6,11 @@ import MobileDropdown from './MobileDropdown';
 import { authLinks, guestLinks } from '../common/NavLinks';
 import { logout } from '../../redux/authSlice';
 import { usePortfolioData } from '../portfolio/PortfolioValue';
+import LogoutConfirmationModal from '../common/LogoutConfirmationModal';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -17,7 +19,7 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login');
+    navigate('/');
   };
 
   const handleScroll = (section) => {
@@ -34,6 +36,19 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const openLogoutModal = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const closeLogoutModal = () => {
+    setIsLogoutModalOpen(false);
+  };
+
+  const confirmLogout = () => {
+    closeLogoutModal();
+    handleLogout();
+  };
+
   return (
     <header>
       <div className="logo">
@@ -46,8 +61,9 @@ const Header = () => {
       <MobileDropdown 
         isOpen={isMenuOpen} 
         onClose={toggleMenu} 
-        links={isAuthenticated ? authLinks : guestLinks.map(link => ({ ...link, onClick: link.onClick ? () => link.onClick(handleScroll) : null }))}
-        isAuth={isAuthenticated} 
+        links={isAuthenticated ? authLinks : guestLinks} 
+        isAuth={isAuthenticated}
+        onLogout={openLogoutModal}
       />
 
       {isAuthenticated && user && (
@@ -57,33 +73,14 @@ const Header = () => {
           {!isLoading && !error && (
             <p>Portfolio Value: <span className="highlight">${portfolioData.portfolioValue?.toFixed(2) || '0.00'}</span></p>
           )}
-          {isLoading && <p>Loading portfolio value...</p>}
-          {error && <p>Error loading portfolio data.</p>}
         </div>
       )}
 
-      <nav className="desktop-nav">
-        {!isAuthenticated && (
-          <ul>
-            {guestLinks.map(link => (
-              <li key={link.path}>
-                <Link to={link.path} onClick={link.onClick ? () => link.onClick(handleScroll) : null}>{link.label}</Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </nav>
-
-      {isAuthenticated ? (
-        <div className="auth-buttons">
-          <button onClick={handleLogout} className="logout btn">Logout</button>
-        </div>
-      ) : (
-        <div className="auth-buttons">
-          <Link to="/login" className="login btn">Login</Link>
-          <Link to="/register" className="signup btn">Sign Up</Link>
-        </div>
-      )}
+      <LogoutConfirmationModal 
+        isOpen={isLogoutModalOpen}
+        onClose={closeLogoutModal}
+        onConfirm={confirmLogout}
+      />
     </header>
   );
 };
