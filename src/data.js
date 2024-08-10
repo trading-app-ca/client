@@ -6,7 +6,7 @@ export const fakeCustomerData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
     values: [10000, 12000, 15000, 13000, 16000, 18000, 20000] // Historical values
   },
-  recentTransactions: [
+  transactions: [
     { date: '14/07/2023', type: 'Deposit', asset: 'USD', amount: 2000, price: 1.0, total: 2000 },
     { date: '12/07/2023', type: 'Withdraw', asset: 'USD', amount: 1000, price: 1.0, total: 1000 },
     { date: '10/07/2023', type: 'Deposit', asset: 'USD', amount: 5000, price: 1.0, total: 5000 },
