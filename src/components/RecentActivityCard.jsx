@@ -26,7 +26,7 @@ const RecentActivityCard = () => {
         if (Array.isArray(tradesResponse)) {
           setTrades(tradesResponse);
         } else if (tradesResponse?.msg === 'No trades found') {
-          setTrades([]); // Handle the case where no trades are found
+          setTrades([]);
         } else {
           setTrades([]);
           console.error('Trades response is not an array:', tradesResponse);
