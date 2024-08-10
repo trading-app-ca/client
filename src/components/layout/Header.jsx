@@ -76,6 +76,22 @@ const Header = () => {
         </div>
       )}
 
+      <nav className="desktop-nav">
+        {!isAuthenticated && (
+          <ul>
+            {guestLinks.map(link => (
+              <li key={link.path}>
+                <Link to={link.path} onClick={link.onClick ? () => link.onClick(handleScroll) : null}>{link.label}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </nav>
+
+      <div className="auth-buttons">
+          <Link to="/login" className="login btn">Login</Link>
+          <Link to="/register" className="signup btn">Sign Up</Link>
+        </div>
       <LogoutConfirmationModal 
         isOpen={isLogoutModalOpen}
         onClose={closeLogoutModal}
