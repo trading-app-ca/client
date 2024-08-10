@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import ApiManager from '../apimanager/ApiManager'; // Ensure this import path is correct
+import ApiManager from '../apimanager/ApiManager';
 
 export const fetchUserBalance = createAsyncThunk('depositWithdraw/fetchUserBalance', async () => {
   const userData = await ApiManager.getUserData();
   return userData.balance;
 });
 
-export const depositFunds = createAsyncThunk('depositWithdraw/depositFunds', async (amount, { rejectWithValue }) => {
+export const depositFunds = createAsyncThunk('depositWithdraw/depositFunds', async (amount, { dispatch, rejectWithValue }) => {
   try {
-    const response = await ApiManager.depositFunds(amount); // Corrected method call
-    console.log('Deposit response:', response);
+    const response = await ApiManager.depositFunds(amount);
+    await dispatch(fetchUserBalance()); 
     return amount;
   } catch (error) {
     console.error('Deposit error:', error);
@@ -17,10 +17,10 @@ export const depositFunds = createAsyncThunk('depositWithdraw/depositFunds', asy
   }
 });
 
-export const withdrawFunds = createAsyncThunk('depositWithdraw/withdrawFunds', async (amount, { rejectWithValue }) => {
+export const withdrawFunds = createAsyncThunk('depositWithdraw/withdrawFunds', async (amount, { dispatch, rejectWithValue }) => {
   try {
-    const response = await ApiManager.withdrawFunds(amount); // Corrected method call
-    console.log('Withdraw response:', response);
+    const response = await ApiManager.withdrawFunds(amount);
+    await dispatch(fetchUserBalance());
     return amount;
   } catch (error) {
     console.error('Withdraw error:', error);

@@ -62,7 +62,7 @@ const TransactionHistory = ({ transactions, currentPage, itemsPerPage, setCurren
       <ul className="trade-history-list">
         {currentTransactions.map((transaction, index) => (
           <li key={index} className="trade-history-item">
-            {new Date(transaction.date).toLocaleDateString('en-AU')}: {transaction.type} ${transaction.amount.toFixed(2)}
+            {new Date(transaction.date).toLocaleDateString('en-AU')}: {transaction.type} <span className="highlight">${transaction.amount.toFixed(2)}</span>
           </li>
         ))}
       </ul>

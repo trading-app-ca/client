@@ -68,8 +68,7 @@ const RecentActivityCard = () => {
           <div key={index}>
             <p>
               <strong>{activity.type}:</strong> 
-              <span className="highlight">
-                ${activity.amount.toFixed(2)} 
+              <span className="highlight"> ${activity.amount.toFixed(2)} 
                 {activity.asset && <em> ({activity.asset})</em>}
               </span>
             </p>
