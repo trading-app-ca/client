@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaBars } from 'react-icons/fa';
 import MobileDropdown from './MobileDropdown';
-import { authLinks, guestLinks } from '../common/NavLinks';
+import { authLinks, guestLinks, loginRegisterLinks } from '../common/NavLinks';
 import { logout } from '../../redux/authSlice';
 import { fetchUserBalance } from '../../redux/depositWithdrawSlice';
 import { usePortfolioData } from '../portfolio/PortfolioValue';
@@ -70,7 +70,7 @@ const Header = () => {
         isOpen={isMenuOpen} 
         onClose={toggleMenu} 
         links={isAuthenticated ? authLinks : guestLinks} 
-        isAuth={isAuthenticated}
+        loginRegisterLinks={!isAuthenticated ? loginRegisterLinks : []}
         onLogout={openLogoutModal}
       />
 

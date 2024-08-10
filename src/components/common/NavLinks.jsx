@@ -12,9 +12,13 @@ export const authLinks = [
   },
 ];
 
-
 export const guestLinks = [
   { path: '/', label: 'Home' },
   { path: '#about', label: 'About', onClick: (handleScroll) => handleScroll('about') },
   { path: '#how-it-works', label: 'How It Works', onClick: (handleScroll) => handleScroll('how-it-works') },
+];
+
+export const loginRegisterLinks = [
+  { path: '/login', label: 'Login' },
+  { path: '/register', label: 'Sign Up' },
 ];
