@@ -18,16 +18,10 @@ export const usePortfolioData = () => {
           const assets = portfolioResponse.assets;
           const trades = tradesResponse;
 
+          // Corrected calculation: Portfolio value should be based solely on current assets
           const totalValue = assets.reduce((total, asset) => {
-            const assetTrades = trades.filter(trade => trade.asset === asset.asset);
-            let assetValue = asset.quantity * asset.averagePurchasePrice;
-
-            assetTrades.forEach(trade => {
-              const tradeValue = trade.quantity * trade.price;
-              assetValue = trade.type === 'buy' ? assetValue + tradeValue : assetValue - tradeValue;
-            });
-
-            return total + assetValue;
+            const currentMarketPrice = asset.currentMarketPrice || asset.averagePurchasePrice; // Use current market price or fallback to average purchase price
+            return total + (asset.quantity * currentMarketPrice);
           }, 0);
 
           setPortfolioData({ assets, trades, portfolioValue: totalValue });

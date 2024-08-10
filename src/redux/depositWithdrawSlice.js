@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import ApiManager from '../apimanager/ApiManager';
+import ApiManager from '../apimanager/ApiManager'; // Ensure this import path is correct
 
 export const fetchUserBalance = createAsyncThunk('depositWithdraw/fetchUserBalance', async () => {
   const userData = await ApiManager.getUserData();
@@ -8,7 +8,7 @@ export const fetchUserBalance = createAsyncThunk('depositWithdraw/fetchUserBalan
 
 export const depositFunds = createAsyncThunk('depositWithdraw/depositFunds', async (amount, { rejectWithValue }) => {
   try {
-    const response = await ApiManager.post('/user/deposit', { amount });
+    const response = await ApiManager.depositFunds(amount); // Corrected method call
     console.log('Deposit response:', response);
     return amount;
   } catch (error) {
@@ -19,7 +19,7 @@ export const depositFunds = createAsyncThunk('depositWithdraw/depositFunds', asy
 
 export const withdrawFunds = createAsyncThunk('depositWithdraw/withdrawFunds', async (amount, { rejectWithValue }) => {
   try {
-    const response = await ApiManager.post('/user/withdraw', { amount });
+    const response = await ApiManager.withdrawFunds(amount); // Corrected method call
     console.log('Withdraw response:', response);
     return amount;
   } catch (error) {
