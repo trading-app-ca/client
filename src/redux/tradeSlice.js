@@ -16,16 +16,16 @@ export const fetchTradeHistory = createAsyncThunk(
   }
 );
 
-// Create a new trade
 export const createTrade = createAsyncThunk(
   'trade/createTrade',
-  async (tradeData, { rejectWithValue }) => {
+  async (tradeData, { dispatch, rejectWithValue }) => {
     try {
       const response = await ApiManager.createTrade(tradeData);
       
       if (!response || typeof response !== 'object') {
         throw new Error('Trade creation failed');
       }
+      dispatch(fetchTradeHistory());
 
       return response; 
     } catch (error) {

@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../common/Card';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTradeHistory } from '../../redux/tradeSlice';
 
-const TradeHistory = ({ trades, currentPage, itemsPerPage, setCurrentPage }) => {
+const TradeHistory = ({ currentPage, itemsPerPage, setCurrentPage }) => {
+  const dispatch = useDispatch();
+  const trades = useSelector(state => state.trade.trades);
   const [sortOrder, setSortOrder] = useState('newest');
   const [filterType, setFilterType] = useState('all');
   const [itemsPerPageOption, setItemsPerPageOption] = useState(itemsPerPage);
+
+  useEffect(() => {
+    dispatch(fetchTradeHistory());
+  }, [dispatch]);
 
   const parseDate = (dateStr) => new Date(dateStr);
 

@@ -94,6 +94,10 @@ const NewTrade = ({ orderType, setOrderType, cryptocurrency, setCryptocurrency, 
       try {
         await dispatch(createTrade(tradeData)).unwrap();
         alert('Order placed successfully');
+        dispatch(fetchPortfolioData()); 
+        setQuantity(''); 
+        setCryptocurrency('');
+        setLocalTotal(0);
       } catch (error) {
         console.error('Error placing trade:', error);
         alert('Failed to place trade.');
