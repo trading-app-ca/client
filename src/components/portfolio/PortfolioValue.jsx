@@ -4,7 +4,7 @@ import ApiManager from '../../apimanager/ApiManager';
 
 export const usePortfolioData = () => {
   const { token, isAuthenticated } = useSelector((state) => state.auth);
-  const [portfolioData, setPortfolioData] = useState({ assets: [], trades: [], portfolioValue: 0 });
+  const [portfolioData, setPortfolioData] = useState({ assets: [], trades: [], portfolioValue: 0, profitLoss: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,13 +18,18 @@ export const usePortfolioData = () => {
           const assets = portfolioResponse.assets;
           const trades = tradesResponse;
 
-          // Corrected calculation: Portfolio value should be based solely on current assets
-          const totalValue = assets.reduce((total, asset) => {
-            const currentMarketPrice = asset.currentMarketPrice || asset.averagePurchasePrice; // Use current market price or fallback to average purchase price
-            return total + (asset.quantity * currentMarketPrice);
-          }, 0);
+          let totalValue = 0;
+          let totalProfitLoss = 0;
 
-          setPortfolioData({ assets, trades, portfolioValue: totalValue });
+          assets.forEach(asset => {
+            const currentMarketPrice = asset.currentMarketPrice || asset.averagePurchasePrice;
+            const assetValue = asset.quantity * currentMarketPrice;
+            const assetProfitLoss = (currentMarketPrice - asset.averagePurchasePrice) * asset.quantity;
+            totalValue += assetValue;
+            totalProfitLoss += assetProfitLoss;
+          });
+
+          setPortfolioData({ assets, trades, portfolioValue: totalValue, profitLoss: totalProfitLoss });
           setIsLoading(false);
         } catch (error) {
           console.error('Error fetching portfolio or trades data:', error);

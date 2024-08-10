@@ -62,12 +62,19 @@ const TradeHistory = ({ trades, currentPage, itemsPerPage, setCurrentPage }) => 
       </div>
 
       <ul className="trade-history-list">
-        {currentTrades.map((trade, index) => (
-          <li key={index} className="trade-history-item">
-            {new Date(trade.date).toLocaleDateString('en-AU')}: {trade.type} {trade.quantity} {trade.asset} at 
-            <span className="highlight trade-price"> ${trade.price.toFixed(2)}</span>
-          </li>
-        ))}
+        {currentTrades.map((trade, index) => {
+          const tradeDate = trade.date ? new Date(trade.date).toLocaleDateString('en-AU') : 'Unknown date';
+          const tradeType = trade.type || 'Unknown type';
+          const tradeQuantity = trade.quantity !== undefined ? trade.quantity : 'Unknown quantity';
+          const tradePrice = trade.price !== undefined ? trade.price.toFixed(2) : 'Unknown price';
+
+          return (
+            <li key={index} className="trade-history-item">
+              {tradeDate}: {tradeType} {tradeQuantity} {trade.asset || 'Unknown asset'} at 
+              <span className="highlight trade-price"> ${tradePrice}</span>
+            </li>
+          );
+        })}
       </ul>
 
       <div className="pagination">

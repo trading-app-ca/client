@@ -6,75 +6,78 @@ import PortfolioChart from '../components/portfolio/PortfolioChart';
 import PortfolioAllocationChart from '../components/portfolio/PortfolioAllocationChart';
 import RecentActivityCard from '../components/RecentActivityCard';
 import { fetchPortfolioData } from '../redux/portfolioSlice';
+import { usePortfolioData } from '../components/portfolio/PortfolioValue';
 import ApiManager from '../apimanager/ApiManager';
 
 const Portfolio = () => {
   const dispatch = useDispatch();
-  const { assets, trades, portfolioValue, isLoading, error } = useSelector((state) => state.portfolio);
-  const [marketData, setMarketData] = useState(null);
+  const { assets, trades, isLoading, error } = useSelector((state) => state.portfolio);
+  const [marketData, setMarketData] = useState({});
+  
+  const { portfolioData, isLoading: portfolioLoading, error: portfolioError } = usePortfolioData();
 
   useEffect(() => {
     dispatch(fetchPortfolioData());
-
-    const fetchMarketData = async () => {
-      try {
-        const [btcResponse, ethResponse, ltcResponse, bnbResponse, adaResponse] = await Promise.all([
-          ApiManager.getMarketData('BTCUSDT'),
-          ApiManager.getMarketData('ETHUSDT'),
-          ApiManager.getMarketData('LTCUSDT'),
-          ApiManager.getMarketData('BNBUSDT'),
-          ApiManager.getMarketData('ADAUSDT'),
-        ]);
-
-        setMarketData({
-          BTC: parseFloat(btcResponse.price),
-          ETH: parseFloat(ethResponse.price),
-          LTC: parseFloat(ltcResponse.price),
-          BNB: parseFloat(bnbResponse.price),
-          ADA: parseFloat(adaResponse.price),
-        });
-      } catch (error) {
-        console.error('Error fetching market data:', error);
-      }
-    };
-
-    fetchMarketData();
   }, [dispatch]);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (assets.length > 0) {
+      const fetchMarketData = async () => {
+        try {
+          const assetSymbols = assets.map(asset => `${asset.asset}USDT`);
+          const marketDataPromises = assetSymbols.map(symbol => ApiManager.getMarketData(symbol));
+          
+          const marketDataResponses = await Promise.all(marketDataPromises);
+          const fetchedMarketData = marketDataResponses.reduce((acc, response, index) => {
+            const symbol = assetSymbols[index].replace('USDT', '');
+            acc[symbol] = parseFloat(response.price);
+            return acc;
+          }, {});
+
+          setMarketData(fetchedMarketData);
+        } catch (error) {
+          console.error('Error fetching market data:', error);
+        }
+      };
+
+      fetchMarketData();
+    }
+  }, [assets]);
+
+  if (isLoading || portfolioLoading) {
     return <div>Loading data...</div>;
   }
 
-  if (error) {
-    return <div>{error}</div>;
+  if (error || portfolioError) {
+    return <div>{error || portfolioError}</div>;
   }
 
   if (!assets.length || !marketData) {
     return <div>Loading data...</div>;
   }
-  const calculateAssetOverview = (assetSymbol, quantityHeld, averagePurchasePrice) => {
-    const currentPrice = marketData[assetSymbol.toUpperCase()] || 0;
-    const currentValue = currentPrice * quantityHeld;
-    const profitLoss = (currentPrice - averagePurchasePrice) * quantityHeld;
-    const profitLossPercentage = averagePurchasePrice !== 0 ? ((currentPrice - averagePurchasePrice) / averagePurchasePrice) * 100 : 0;
 
-    return { currentPrice, currentValue, profitLoss, profitLossPercentage };
-  };
-
-  const assetsWithValues = assets.map(asset => ({
+  const assetsWithValues = portfolioData.assets.map(asset => ({
     ...asset,
-    ...calculateAssetOverview(asset.asset, asset.quantity, asset.averagePurchasePrice),
+    currentPrice: marketData[asset.asset.toUpperCase()] || 0,
+    currentValue: (marketData[asset.asset.toUpperCase()] || 0) * asset.quantity,
+    profitLoss: ((marketData[asset.asset.toUpperCase()] || 0) - asset.averagePurchasePrice) * asset.quantity,
+    profitLossPercentage: asset.averagePurchasePrice !== 0 
+      ? (((marketData[asset.asset.toUpperCase()] || 0) - asset.averagePurchasePrice) / asset.averagePurchasePrice) * 100 
+      : 0,
     name: asset.asset.toUpperCase(),
     symbol: asset.asset.toUpperCase(),
     quantityHeld: asset.quantity,
   }));
 
+  const totalPortfolioValue = assetsWithValues.reduce((acc, asset) => acc + asset.currentValue, 0);
+  const totalProfitLoss = totalPortfolioValue - assets.reduce((acc, asset) => acc + asset.averagePurchasePrice * asset.quantity, 0);
+
   return (
     <div className="content-container">
       <div className="row">
         <Card title="Your Portfolio Overview">
-          <p><strong>Total Portfolio Value:</strong> <span className="highlight">${portfolioValue.toFixed(2)}</span></p>
-          <p><strong>Total Profit/Loss:</strong> <span className="highlight">${(portfolioValue - assets.reduce((acc, asset) => acc + asset.averagePurchasePrice * asset.quantity, 0)).toFixed(2)}</span></p>
+          <p><strong>Total Portfolio Value:</strong> <span className="highlight">${totalPortfolioValue.toFixed(2)}</span></p>
+          <p><strong>Total Profit/Loss:</strong> <span className="highlight">${totalProfitLoss.toFixed(2)}</span></p>
         </Card>
 
         <RecentActivityCard portfolioData={{ assets, trades }} />

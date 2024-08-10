@@ -1,21 +1,34 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import { usePortfolioData } from './PortfolioValue'; 
-const calculatePortfolioValue = (initialBalance, trades) => {
+
+// Function to calculate portfolio value over time
+const calculatePortfolioValue = (trades) => {
   const values = [];
-  let currentBalance = initialBalance;
+  const assetHoldings = {};
 
   trades.forEach(trade => {
-    const { type, quantity, price, date } = trade;
-    const tradeValue = quantity * price;
+    const { type, quantity, price, date, asset } = trade;
 
-    if (type === 'buy') {
-      currentBalance -= tradeValue;
-    } else if (type === 'sell') {
-      currentBalance += tradeValue;
+    if (!assetHoldings[asset]) {
+      assetHoldings[asset] = { quantity: 0, averagePurchasePrice: 0 };
     }
 
-    values.push({ date: new Date(date), value: currentBalance });
+    const holding = assetHoldings[asset];
+    const totalCost = holding.quantity * holding.averagePurchasePrice;
+
+    if (type === 'buy') {
+      holding.quantity += quantity;
+      holding.averagePurchasePrice = (totalCost + (quantity * price)) / holding.quantity;
+    } else if (type === 'sell') {
+      holding.quantity -= quantity;
+    }
+
+    const currentPortfolioValue = Object.values(assetHoldings).reduce((acc, holding) => {
+      return acc + (holding.quantity * holding.averagePurchasePrice);
+    }, 0);
+
+    values.push({ date: new Date(date), value: currentPortfolioValue });
   });
 
   return values;
@@ -28,8 +41,8 @@ const PortfolioChart = () => {
   useEffect(() => {
     if (isLoading || error) return;
 
-    const { portfolioValue, trades } = portfolioData;
-    const portfolioValuesOverTime = calculatePortfolioValue(portfolioValue, trades);
+    const { trades } = portfolioData;
+    const portfolioValuesOverTime = calculatePortfolioValue(trades);
 
     if (portfolioValuesOverTime.length === 0) {
       console.warn('No portfolio values to display.');
