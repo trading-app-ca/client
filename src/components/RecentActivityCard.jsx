@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import ApiManager from '../apimanager/ApiManager';
 import Card from './common/Card';
 
+
 const RecentActivityCard = () => {
   const [transactions, setTransactions] = useState([]);
   const [trades, setTrades] = useState([]);
@@ -16,8 +17,19 @@ const RecentActivityCard = () => {
         const transactionsResponse = await ApiManager.getTransactionsData();
         const tradesResponse = await ApiManager.getTradesData();
 
-        setTransactions(transactionsResponse);
-        setTrades(tradesResponse);
+        if (Array.isArray(transactionsResponse)) {
+          setTransactions(transactionsResponse);
+        } else {
+          setTransactions([]);
+          console.error('Transactions response is not an array:', transactionsResponse);
+        }
+
+        if (Array.isArray(tradesResponse)) {
+          setTrades(tradesResponse);
+        } else {
+          setTrades([]);
+          console.error('Trades response is not an array:', tradesResponse);
+        }
       } catch (error) {
         console.error('Error fetching recent activity:', error);
         setError('Failed to load recent activity.');
@@ -27,19 +39,19 @@ const RecentActivityCard = () => {
     fetchActivityData();
   }, [token]);
 
-  const mappedTransactions = transactions.map(tx => ({
+  const mappedTransactions = Array.isArray(transactions) ? transactions.map(tx => ({
     date: new Date(tx.date),
     type: tx.type,
     amount: tx.amount,
     asset: null
-  }));
+  })) : [];
 
-  const mappedTrades = trades.map(trade => ({
+  const mappedTrades = Array.isArray(trades) ? trades.map(trade => ({
     date: new Date(trade.date),
     type: trade.type === 'buy' ? 'Buy' : 'Sell',
     amount: trade.quantity * trade.price,
     asset: trade.asset
-  }));
+  })) : [];
 
   const recentActivity = [
     ...mappedTransactions,
