@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import ApiManager from '../apimanager/ApiManager';
 import Card from './common/Card';
 
+
 const RecentActivityCard = () => {
   const [transactions, setTransactions] = useState([]);
   const [trades, setTrades] = useState([]);
