@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import ApiManager from '../apimanager/ApiManager';
 import Card from './common/Card';
 
-
 const RecentActivityCard = () => {
   const [transactions, setTransactions] = useState([]);
   const [trades, setTrades] = useState([]);
@@ -26,6 +25,8 @@ const RecentActivityCard = () => {
 
         if (Array.isArray(tradesResponse)) {
           setTrades(tradesResponse);
+        } else if (tradesResponse?.msg === 'No trades found') {
+          setTrades([]); // Handle the case where no trades are found
         } else {
           setTrades([]);
           console.error('Trades response is not an array:', tradesResponse);

@@ -29,6 +29,16 @@ class ApiManager {
     }
   }
 
+  static async createTrade(tradeData) {
+    try {
+      const response = await ApiMethods.post(ENDPOINTS.CREATE_TRADE, tradeData);
+      return response;
+    } catch (error) {
+      console.error('Error creating trade:', error);
+      throw error;
+    }
+  }
+
   static login(data) {
     return ApiMethods.post(ENDPOINTS.LOGIN, data);
   }

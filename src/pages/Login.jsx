@@ -20,16 +20,12 @@ const Login = () => {
 
     try {
       const result = await dispatch(loginUser(data)).unwrap();
-
-      // If login is successful, navigate to the dashboard
       navigate('/dashboard');
     } catch (error) {
-      // If login fails, the error will be handled by Redux state
       console.error('Login failed:', error);
     }
   };
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard');

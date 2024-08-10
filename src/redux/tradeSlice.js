@@ -6,9 +6,30 @@ export const fetchTradeHistory = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await ApiManager.getTradesData();
+      if (!Array.isArray(response)) {
+        throw new Error('Invalid data format received');
+      }
       return response;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.message || 'Failed to fetch trade history');
+    }
+  }
+);
+
+// Create a new trade
+export const createTrade = createAsyncThunk(
+  'trade/createTrade',
+  async (tradeData, { rejectWithValue }) => {
+    try {
+      const response = await ApiManager.createTrade(tradeData);
+      
+      if (!response || typeof response !== 'object') {
+        throw new Error('Trade creation failed');
+      }
+
+      return response; 
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to create trade');
     }
   }
 );
@@ -29,9 +50,22 @@ const tradeSlice = createSlice({
       })
       .addCase(fetchTradeHistory.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.trades = action.payload;
+        state.trades = action.payload; 
       })
       .addCase(fetchTradeHistory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(createTrade.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createTrade.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.trades.push(action.payload); 
+      })
+      .addCase(createTrade.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

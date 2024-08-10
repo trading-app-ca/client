@@ -4,12 +4,13 @@ import TradeHistory from '../components/trade/TradeHistory';
 import NewTrade from '../components/trade/NewTrade';
 import TradingChart from '../components/trade/TradingChart';
 import { fetchUserData } from '../redux/dashboardSlice';
-import { fetchTradeHistory } from '../redux/tradeSlice';
+import { createTrade, fetchTradeHistory } from '../redux/tradeSlice';
 import { fetchPortfolioData } from '../redux/portfolioSlice';
 import ApiManager from '../apimanager/ApiManager';
 
 const Trade = () => {
   const dispatch = useDispatch();
+
   const { userData } = useSelector((state) => state.dashboard);
   const { trades } = useSelector((state) => state.trade);
   const { portfolioData } = useSelector((state) => state.portfolio);
@@ -73,53 +74,30 @@ const Trade = () => {
     setTotal(quantity * price);
   }, [quantity, price]);
 
-  const updatePortfolioAssets = (currentAssets, tradeData) => {
-    const { type, assetName, quantity } = tradeData;
-    const assetIndex = currentAssets.findIndex(asset => asset.asset === assetName);
-
-    if (type === 'buy') {
-      if (assetIndex !== -1) {
-        currentAssets[assetIndex].quantity += quantity;
-      } else {
-        currentAssets.push({ asset: assetName, quantity });
-      }
-    } else if (type === 'sell') {
-      if (assetIndex !== -1) {
-        currentAssets[assetIndex].quantity -= quantity;
-        if (currentAssets[assetIndex].quantity <= 0) {
-          currentAssets.splice(assetIndex, 1); 
-        }
-      }
-    }
-
-    return [...currentAssets];
-  };
-
   const handleSubmit = async () => {
     if (quantity && price) {
-      const assetName = cryptocurrency.replace('USDT', '');
-
       const tradeData = {
         type: orderType.toLowerCase(),
-        assetName,
+        assetName: cryptocurrency.replace('USDT', ''),
         quantity: parseFloat(quantity),
         price: parseFloat(price),
       };
-
+  
       try {
-        const response = await ApiManager.createTrade(tradeData);
-        setBalance(response.newBalance);
-        setAssets(updatePortfolioAssets(assets, tradeData));
-        setTradeHistory([...tradeHistory, response.trade]);
+        await dispatch(createTrade(tradeData)).unwrap();
+        alert('Order placed successfully');
+        dispatch(fetchUserData());
+        dispatch(fetchPortfolioData());
+        dispatch(fetchTradeHistory());
         setQuantity('');
         setTotal(0);
-        alert('Order placed successfully');
       } catch (error) {
         console.error('Error placing trade:', error);
         alert('Failed to place trade.');
       }
     }
   };
+  
 
   return (
     <div className="trade">

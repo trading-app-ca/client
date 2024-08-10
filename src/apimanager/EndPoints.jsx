@@ -6,6 +6,7 @@ const ENDPOINTS = {
     LOGIN: 'auth/login',
     GET_MARKET_PRICE: 'market/price',
     REGISTER: 'auth/register',
+    CREATE_TRADE: 'trades/new-trade',
   };
   
   export default ENDPOINTS;
