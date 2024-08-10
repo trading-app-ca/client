@@ -42,6 +42,9 @@ const AuthForm = ({ isRegister, handleSubmit }) => {
             {isRegister ? 'Create your account' : 'Sign in'}
           </button>
         </form>
+        <div className="return-home">
+          <Link to="/">Return to Home</Link>
+        </div>
       </div>
       <div className="info-text">
         <h2>Crypto Trader</h2>

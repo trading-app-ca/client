@@ -6,8 +6,22 @@
   font-family: Arial, sans-serif;
 
   .form-container {
+
+    div.return-home {
+      margin-top: 20px;
+      a {
+        text-decoration: none;
+        color: $secondary-colour;
+        &:hover {
+          text-decoration: underline;
+          cursor: pointer;
+        }
+      }
+    }
+    
     @include section-padding(40px);
     @include container-max-width(400px);
+
 
     h1 {
       margin-bottom: 20px;
