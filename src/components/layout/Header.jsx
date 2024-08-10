@@ -66,13 +66,11 @@ const Header = () => {
         onLogout={openLogoutModal}
       />
 
-      {isAuthenticated && user && (
+{isAuthenticated && user && (
         <div className="auth-info">
           <h2>Welcome, <span className="highlight">{user.firstName} {user.lastName}.</span></h2>
           <p>Balance: <span className="highlight">${user.balance?.toFixed(2) || 'N/A'}</span></p>
-          {!isLoading && !error && (
-            <p>Portfolio Value: <span className="highlight">${portfolioData.portfolioValue?.toFixed(2) || '0.00'}</span></p>
-          )}
+          <p>Portfolio Value: <span className="highlight">${!isLoading && portfolioData?.portfolioValue ? portfolioData.portfolioValue.toFixed(2) : '0.00'}</span></p>
         </div>
       )}
 
@@ -88,10 +86,13 @@ const Header = () => {
         )}
       </nav>
 
-      <div className="auth-buttons">
+      {!isAuthenticated && (
+        <div className="auth-buttons">
           <Link to="/login" className="login btn">Login</Link>
           <Link to="/register" className="signup btn">Sign Up</Link>
         </div>
+      )}
+
       <LogoutConfirmationModal 
         isOpen={isLogoutModalOpen}
         onClose={closeLogoutModal}
