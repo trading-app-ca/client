@@ -39,6 +39,15 @@ class ApiManager {
     }
   }
 
+  static depositFunds(amount) {
+    return ApiMethods.post(ENDPOINTS.DEPOSIT_FUNDS, { amount });
+  }
+
+  static withdrawFunds(amount) {
+    return ApiMethods.post(ENDPOINTS.WITHDRAW_FUNDS, { amount });
+  }
+
+
   static login(data) {
     return ApiMethods.post(ENDPOINTS.LOGIN, data);
   }

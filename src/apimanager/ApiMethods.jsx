@@ -12,25 +12,29 @@ const getHeaders = () => {
 };
 
 class ApiMethods {
-    static apiRequest(method, url, body = null) {
-      return new Promise((resolve, reject) => {
-        fetch(`${BASE_URL}${url}`, {
-          method,
-          headers: getHeaders(),
-          body: body ? JSON.stringify(body) : undefined,
-        })
-          .then(async (res) => {
-            if (!res.ok) {
-              const errorText = await res.text();
-              throw new Error(errorText);
+    static async apiRequest(method, url, body = null) {
+        try {
+            const response = await fetch(`${BASE_URL}${url}`, {
+                method,
+                headers: getHeaders(),
+                body: body ? JSON.stringify(body) : undefined,
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`API ${method} ${url} error:`, errorText);
+                throw new Error(errorText);
             }
-            return res.json();
-          })
-          .then(resolve)
-          .catch(reject);
-      });
+
+            const data = await response.json();
+            console.log(`API ${method} ${url} response:`, data);
+            return data;
+        } catch (error) {
+            console.error(`API ${method} ${url} failed:`, error);
+            throw error;
+        }
     }
-  
+
     static post(url, data) {
         return this.apiRequest('POST', url, data);
     }

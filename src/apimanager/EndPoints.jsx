@@ -7,6 +7,8 @@ const ENDPOINTS = {
     GET_MARKET_PRICE: 'market/price',
     REGISTER: 'auth/register',
     CREATE_TRADE: 'trades/new-trade',
+    DEPOSIT_FUNDS: 'user/deposit',
+    WITHDRAW_FUNDS: 'user/withdraw',
   };
   
   export default ENDPOINTS;

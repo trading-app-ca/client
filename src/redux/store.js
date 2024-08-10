@@ -4,6 +4,7 @@ import portfolioReducer from './portfolioSlice';
 import dashboardReducer from './dashboardSlice';
 import tradeReducer from './tradeSlice';
 import transactionReducer from './transactionSlice'; 
+import depositWithdrawReducer from './depositWithdrawSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     dashboard: dashboardReducer,
     trade: tradeReducer,  
     transaction: transactionReducer,  
+    depositWithdraw: depositWithdrawReducer,  
   },
 });
 

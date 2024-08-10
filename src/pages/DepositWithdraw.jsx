@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Card from '../components/common/Card';
-import { fakeCustomerData } from '../data'; 
-import '../styles/pages/DepositWithdraw.scss';
+import { fetchUserBalance, depositFunds, withdrawFunds } from '../redux/depositWithdrawSlice';
 
 const DepositWithdraw = () => {
+  const dispatch = useDispatch();
+  const balance = useSelector((state) => state.depositWithdraw.balance);
   const [mode, setMode] = useState('Deposit');
-  const [balance, setBalance] = useState(fakeCustomerData.balance); 
   const [selectedAmount, setSelectedAmount] = useState(''); 
   const [customAmount, setCustomAmount] = useState(''); 
+
+  useEffect(() => {
+    dispatch(fetchUserBalance());
+  }, [dispatch]);
 
   const handleModeChange = (newMode) => setMode(newMode);
 
@@ -29,23 +34,18 @@ const DepositWithdraw = () => {
     }
 
     const numericAmount = parseFloat(amount);
-    let newBalance = balance;
 
     if (mode === 'Deposit') {
-      newBalance += numericAmount;
+      dispatch(depositFunds(numericAmount));
     } else if (mode === 'Withdraw') {
       if (numericAmount > balance) {
         alert('Insufficient balance.');
         return;
       }
-      newBalance -= numericAmount;
+      dispatch(withdrawFunds(numericAmount));
     }
 
-    setBalance(newBalance);
-    fakeCustomerData.balance = newBalance; 
     alert(`${mode} of $${numericAmount.toFixed(2)} successful!`);
-
-
     setSelectedAmount('');
     setCustomAmount('');
   };
