@@ -24,10 +24,15 @@ const NewTrade = ({ orderType, setOrderType, cryptocurrency, setCryptocurrency, 
           .filter((symbol) => symbol.quoteAsset === 'USDT')
           .map((symbol) => symbol.symbol);
         setCryptocurrencies(symbols);
-        setCryptocurrency(symbols[0] || 'BTCUSDT');
+
+        if (orderType === 'Sell' && assets.length > 0 && !cryptocurrency) {
+          setCryptocurrency(`${assets[0].asset}USDT`);
+        } else if (orderType === 'Buy' && !cryptocurrency) {
+          setCryptocurrency(symbols[0] || 'BTCUSDT');
+        }
       })
       .catch((error) => console.error('Error fetching Binance data:', error));
-  }, [dispatch, setCryptocurrency]);
+  }, [dispatch, orderType, cryptocurrency, setCryptocurrency, assets]);
 
   useEffect(() => {
     if (cryptocurrency) {
@@ -47,9 +52,15 @@ const NewTrade = ({ orderType, setOrderType, cryptocurrency, setCryptocurrency, 
   }, [quantity, localPrice]);
 
   const handleOrderTypeChange = (e) => {
-    setOrderType(e.target.value);
+    const newOrderType = e.target.value;
+    setOrderType(newOrderType);
     setQuantity('');
-    setCryptocurrency('');
+
+    if (newOrderType === 'Sell' && assets.length > 0) {
+      setCryptocurrency(`${assets[0].asset}USDT`);
+    } else if (newOrderType === 'Buy' && cryptocurrencies.length > 0) {
+      setCryptocurrency(cryptocurrencies[0] || 'BTCUSDT');
+    }
   };
 
   const handleCryptocurrencyChange = (e) => {
