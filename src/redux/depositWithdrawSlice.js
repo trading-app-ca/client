@@ -8,7 +8,7 @@ export const fetchUserBalance = createAsyncThunk('depositWithdraw/fetchUserBalan
 
 export const depositFunds = createAsyncThunk('depositWithdraw/depositFunds', async (amount, { dispatch, rejectWithValue }) => {
   try {
-    const response = await ApiManager.depositFunds(amount);
+    await ApiManager.depositFunds(amount); 
     await dispatch(fetchUserBalance()); 
     return amount;
   } catch (error) {
@@ -19,7 +19,7 @@ export const depositFunds = createAsyncThunk('depositWithdraw/depositFunds', asy
 
 export const withdrawFunds = createAsyncThunk('depositWithdraw/withdrawFunds', async (amount, { dispatch, rejectWithValue }) => {
   try {
-    const response = await ApiManager.withdrawFunds(amount);
+    await ApiManager.withdrawFunds(amount); 
     await dispatch(fetchUserBalance());
     return amount;
   } catch (error) {
@@ -36,12 +36,6 @@ const depositWithdrawSlice = createSlice({
     builder
       .addCase(fetchUserBalance.fulfilled, (state, action) => {
         state.balance = action.payload;
-      })
-      .addCase(depositFunds.fulfilled, (state, action) => {
-        state.balance += action.payload;
-      })
-      .addCase(withdrawFunds.fulfilled, (state, action) => {
-        state.balance -= action.payload;
       })
       .addCase(depositFunds.rejected, (state, action) => {
         state.error = action.payload;
