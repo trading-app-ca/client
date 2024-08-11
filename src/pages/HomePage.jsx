@@ -7,23 +7,27 @@ import TestimonialsSection from '../components/Homepage/TestimonialsSection';
 import CallToActionSection from '../components/Homepage/CallToActionSection';
 
 const HomePage = () => {
+  // Ref to hold references to each section element
   const sectionsRef = useRef([]);
 
   useEffect(() => {
+    // Create an IntersectionObserver instance to handle section visibility
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          // Add 'visible' class when section comes into view
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
+            observer.unobserve(entry.target); // Stop observing the section after it becomes visible
           }
         });
       },
       {
-        threshold: 0.1,
+        threshold: 0.1, // Trigger when 10% of the section is visible
       }
     );
 
+    // Observe each section element
     sectionsRef.current.forEach((section) => {
       if (section) observer.observe(section);
     });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
-
+// Mobile dropdown menu component
 const MobileDropdown = ({ isOpen, onClose, links, loginRegisterLinks = [], onLogout }) => {
   const combinedLinks = [...links, ...loginRegisterLinks];
 

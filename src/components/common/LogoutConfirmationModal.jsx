@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from './Card';
-
+// Modal for confirming logout action
 const LogoutConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
 

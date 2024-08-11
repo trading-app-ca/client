@@ -15,6 +15,7 @@ const AccountSettings = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
 
+  // Set initial form values when user data is loaded
   useEffect(() => {
     if (user) {
       setFullName(`${user.firstName} ${user.lastName}`);
@@ -22,15 +23,18 @@ const AccountSettings = () => {
     }
   }, [user]);
 
+  // Handle profile update form submission
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     const validationErrors = {};
 
+    // Validate form input
     if (!fullName.trim()) validationErrors.fullName = 'Full Name is required';
     if (!email.trim()) validationErrors.email = 'Email is required';
 
     setErrors(validationErrors);
 
+    // If no validation errors, proceed with API call
     if (Object.keys(validationErrors).length === 0) {
       const [firstName, lastName] = fullName.split(' ');
 
@@ -45,16 +49,19 @@ const AccountSettings = () => {
     }
   };
 
+  // Handle password update form submission
   const handleSavePassword = async (e) => {
     e.preventDefault();
     const validationErrors = {};
 
+    // Validate form input
     if (!currentPassword.trim()) validationErrors.currentPassword = 'Current Password is required';
     if (!newPassword.trim()) validationErrors.newPassword = 'New Password is required';
     if (newPassword !== confirmPassword) validationErrors.confirmPassword = 'Passwords do not match';
 
     setErrors(validationErrors);
 
+    // If no validation errors, proceed with API calls
     if (Object.keys(validationErrors).length === 0) {
       try {
         await ApiManager.verifyPassword(currentPassword);
@@ -67,6 +74,7 @@ const AccountSettings = () => {
     }
   };
 
+  // Handle account deletion
   const handleDeleteAccount = async () => {
     if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
       try {

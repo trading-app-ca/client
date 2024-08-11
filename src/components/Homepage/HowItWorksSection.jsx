@@ -4,7 +4,7 @@ import number1 from '../../assets/icons/number-1.png';
 import number2 from '../../assets/icons/number-2.png';
 import number3 from '../../assets/icons/number-3.png';
 import number4 from '../../assets/icons/number-4.png';
-
+// How it works section used on homepage
 const steps = [
     {
         number: 1,

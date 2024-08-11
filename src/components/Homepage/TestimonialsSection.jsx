@@ -1,5 +1,5 @@
 import React from "react";
-
+// Testimonials section used on homepage
 const testimonials = [
     {
         quote: "Crypto Trader has helped me understand trading better without losing money.",

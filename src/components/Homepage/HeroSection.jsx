@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "../../assets/images/hero-image-home.jpeg";
-
+// Hero section used on homepage
 const HeroSection = () => {
   const navigate = useNavigate();
 

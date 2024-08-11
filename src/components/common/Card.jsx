@@ -1,5 +1,5 @@
 import React from 'react';
-
+// Reusable card component with title and content 
 const Card = ({ title, children }) => {
   return (
     <div className="card">

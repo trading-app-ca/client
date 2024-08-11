@@ -11,10 +11,12 @@ import ApiManager from '../apimanager/ApiManager';
 const Trade = () => {
   const dispatch = useDispatch();
 
+  // Select data from Redux store
   const { userData } = useSelector((state) => state.dashboard);
   const { trades } = useSelector((state) => state.trade);
   const { portfolioData } = useSelector((state) => state.portfolio);
 
+  // Local state for trade form and display
   const [orderType, setOrderType] = useState('Buy');
   const [cryptocurrency, setCryptocurrency] = useState('BTCUSDT');
   const [cryptocurrencies, setCryptocurrencies] = useState([]);
@@ -27,18 +29,21 @@ const Trade = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  // Fetch user data, portfolio data, and trade history
   useEffect(() => {
     dispatch(fetchUserData());
     dispatch(fetchPortfolioData());
     dispatch(fetchTradeHistory());
   }, [dispatch]);
 
+  // Update local state when Redux state changes
   useEffect(() => {
     setBalance(userData?.balance || 0);
     setAssets(portfolioData?.assets || []);
     setTradeHistory(trades || []);
   }, [userData, portfolioData, trades]);
 
+  // Fetch cryptocurrencies from Binance API
   useEffect(() => {
     const fetchMarketInfo = async () => {
       try {

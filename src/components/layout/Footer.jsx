@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaLinkedin, FaTwitter, FaFacebook } from 'react-icons/fa';
 import NewsletterSubscription from '../common/NewsletterSubscription';
-
+// Footer used on guest pages
 const Footer = () => {
   const navigate = useNavigate();
 

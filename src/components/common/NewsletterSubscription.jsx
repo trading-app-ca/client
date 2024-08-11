@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+// Subscribe to newsletter form used in footer
 const NewsletterSubscription = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');

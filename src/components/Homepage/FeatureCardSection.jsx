@@ -3,7 +3,7 @@ import tradingChartsIcon from '../../assets/icons/trading-charts.png';
 import simulatedTradeIcon from '../../assets/icons/simulated-trade.png';
 import performanceIcon from '../../assets/icons/performance.png';
 import secureAccountIcon from '../../assets/icons/secure-account.png';
-
+// Feature card section used on homepage
 const features = [
     {
         icon: tradingChartsIcon,
