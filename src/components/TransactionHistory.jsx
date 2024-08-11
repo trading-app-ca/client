@@ -13,20 +13,24 @@ const TransactionHistory = ({ transactions, currentPage, itemsPerPage, setCurren
     return <Card title="Transaction History"><p>No transaction history to display.</p></Card>;
   }
 
+   // Filter transactions based on selected filterType
   const filteredTransactions = transactions.filter(transaction =>
     filterType === 'all' ? true : transaction.type.toLowerCase() === filterType
   );
 
+    // Sort transactions based on selected sortOrder
   const sortedTransactions = filteredTransactions.sort((a, b) => 
     sortOrder === 'newest' ? parseDate(b.date) - parseDate(a.date) : parseDate(a.date) - parseDate(b.date)
   );
 
+    // Handle change in items per page option
   const handleItemsPerPageChange = (e) => {
     const value = e.target.value === 'all' ? sortedTransactions.length : parseInt(e.target.value);
     setItemsPerPageOption(value);
     setCurrentPage(1);
   };
 
+    // Get current transactions to display based on pagination
   const currentTransactions = sortedTransactions.slice((currentPage - 1) * itemsPerPageOption, currentPage * itemsPerPageOption);
 
   return (

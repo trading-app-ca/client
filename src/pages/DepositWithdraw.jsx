@@ -6,28 +6,37 @@ import { fetchUserBalance, depositFunds, withdrawFunds } from '../redux/depositW
 const DepositWithdraw = () => {
   const dispatch = useDispatch();
   const balance = useSelector((state) => state.depositWithdraw.balance);
-  const [mode, setMode] = useState('Deposit');
-  const [selectedAmount, setSelectedAmount] = useState(''); 
-  const [customAmount, setCustomAmount] = useState(''); 
 
+  // State to manage deposit/withdraw mode and input amounts
+  const [mode, setMode] = useState('Deposit');
+  const [selectedAmount, setSelectedAmount] = useState('');
+  const [customAmount, setCustomAmount] = useState('');
+
+  // Fetch user balance when component mounts
   useEffect(() => {
     dispatch(fetchUserBalance());
   }, [dispatch]);
 
+  // Switch between Deposit and Withdraw modes
   const handleModeChange = (newMode) => setMode(newMode);
 
+  // Update selected amount from dropdown
   const handleDropdownChange = (e) => {
     setSelectedAmount(e.target.value);
-    setCustomAmount(''); 
+    setCustomAmount('');
   };
 
+  // Update custom amount from input field
   const handleCustomAmountChange = (e) => {
     setCustomAmount(e.target.value);
-    setSelectedAmount(''); 
+    setSelectedAmount('');
   };
 
+  // Handle the confirm action based on the current mode
   const handleConfirm = () => {
-    const amount = selectedAmount || customAmount; 
+    const amount = selectedAmount || customAmount;
+    
+    // Validate the entered amount
     if (!amount || amount <= 0) {
       alert('Please select or enter a valid amount.');
       return;
@@ -35,6 +44,7 @@ const DepositWithdraw = () => {
 
     const numericAmount = parseFloat(amount);
 
+    // Handle deposit action
     if (mode === 'Deposit') {
       dispatch(depositFunds(numericAmount));
     } else if (mode === 'Withdraw') {

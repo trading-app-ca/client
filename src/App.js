@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './redux/store'; 
-import { initializeAuth, fetchUserData } from './redux/authSlice';
+import { initialiseAuth, fetchUserData } from './redux/authSlice';
 import AuthUserLayout from './components/layout/AuthUserLayout';
 import GuestLayout from './components/layout/GuestLayout';
 import LoginSignupLayout from './components/layout/LoginSignupLayout';
@@ -24,11 +24,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
-      },
-      {
-        path: '*',
-        element: <NotFoundPage />,
+        element: <HomePage />, // Default route for guests (home page)
       },
     ],
   },
@@ -46,7 +42,7 @@ const router = createBrowserRouter([
       },
       {
         path: '*',
-        element: <Navigate to="/dashboard" replace />,
+        element: <Navigate to="/dashboard" replace />, // Redirect unknown routes to dashboard
       },
     ],
   },
@@ -80,6 +76,10 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: '*',
+    element: <NotFoundPage />, // Page for unknown routes (404 Not Found)
+  },
 ]);
 
 function AppInitialiser() {
@@ -87,7 +87,8 @@ function AppInitialiser() {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(initializeAuth());
+    // Initialise authentication status and fetch user data if authenticated
+    dispatch(initialiseAuth());
     if (isAuthenticated) {
       dispatch(fetchUserData());
     }

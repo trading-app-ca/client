@@ -11,6 +11,7 @@ import { fetchMarketData } from '../redux/marketDataSlice';
 const Portfolio = () => {
   const dispatch = useDispatch();
 
+  // Extract portfolio data and market data from the Redux store
   const { assets, trades, portfolioValue, profitLoss, isLoading, error } = useSelector((state) => state.portfolio);
   const marketData = useSelector((state) => state.marketData.data);
 
@@ -35,6 +36,7 @@ const Portfolio = () => {
     return <div>{error}</div>;
   }
 
+  // Calculate asset values and performance metrics
   const assetsWithValues = assets.map(asset => ({
     ...asset,
     currentPrice: marketData[asset.asset.toUpperCase()] || 0,

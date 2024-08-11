@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+// Collapsible section used on portolio page
 const CollapsibleSection = ({ title, children }) => {
   const [isOpen, setIsOpen] = useState(false);
 

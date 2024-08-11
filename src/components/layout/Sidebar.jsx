@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { authLinks } from '../common/NavLinks'; 
 import LogoutConfirmationModal from '../common/LogoutConfirmationModal';
 import { logout } from '../../redux/authSlice';
-
+// Sidebar component used on authenticated pages on the desktop
 const Sidebar = () => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const dispatch = useDispatch();

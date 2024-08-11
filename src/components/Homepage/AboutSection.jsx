@@ -1,5 +1,5 @@
 import React from "react";
-
+// About section on homepage
 function AboutSection() {
     return (
         <div className="about-section">

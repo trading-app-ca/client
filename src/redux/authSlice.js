@@ -65,7 +65,7 @@ const authSlice = createSlice({
       state.token = null;
       localStorage.removeItem('authToken');
     },
-    initializeAuth(state) {
+    initialiseAuth(state) {
       // Initialise authentication state from localStorage token
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -118,6 +118,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, initializeAuth } = authSlice.actions;
+export const { logout, initialiseAuth } = authSlice.actions;
 
 export default authSlice.reducer;

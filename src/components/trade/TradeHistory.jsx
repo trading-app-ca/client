@@ -36,7 +36,8 @@ const TradeHistory = ({ currentPage, itemsPerPage, setCurrentPage }) => {
     setItemsPerPageOption(value);
     setCurrentPage(1);
   };
-
+  
+  // Get current trades to display based on pagination
   const currentTrades = sortedTrades.slice((currentPage - 1) * itemsPerPageOption, currentPage * itemsPerPageOption);
 
   return (

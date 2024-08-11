@@ -1,3 +1,5 @@
+// Navlinks used in header, sidebar, and mobile dropdown
+
 export const authLinks = [
   { path: '/dashboard', label: 'Dashboard' },
   { path: '/portfolio', label: 'Portfolio' },

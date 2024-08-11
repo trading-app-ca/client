@@ -1,5 +1,5 @@
 import React from "react";
-
+// Call to action section used on homepage
 function CallToActionSection() {
     return (
         <div className="cta-section">

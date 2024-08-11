@@ -3,7 +3,7 @@ import { Outlet, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Sidebar from './Sidebar';
 import Header from './Header';
-
+// Auth user layout for authenticated user pages
 const AuthUserLayout = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 

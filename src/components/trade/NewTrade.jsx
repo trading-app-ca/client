@@ -5,6 +5,7 @@ import { fetchPortfolioData } from '../../redux/portfolioSlice';
 import { fetchUserData } from '../../redux/authSlice';
 import { createTrade } from '../../redux/tradeSlice'; 
 
+// Component to handle creating new trades (buy/sell cryptocurrency)
 const NewTrade = ({ orderType, setOrderType, cryptocurrency, setCryptocurrency, quantity, setQuantity }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -13,6 +14,7 @@ const NewTrade = ({ orderType, setOrderType, cryptocurrency, setCryptocurrency, 
   const [localPrice, setLocalPrice] = useState(0);
   const [localTotal, setLocalTotal] = useState(0);
 
+  // Fetch user data and portfolio data when the component mounts
   useEffect(() => {
     dispatch(fetchUserData());
     dispatch(fetchPortfolioData());
@@ -34,6 +36,7 @@ const NewTrade = ({ orderType, setOrderType, cryptocurrency, setCryptocurrency, 
       .catch((error) => console.error('Error fetching Binance data:', error));
   }, [dispatch, orderType, cryptocurrency, setCryptocurrency, assets]);
 
+  // Fetch current price of the selected cryptocurrency
   useEffect(() => {
     if (cryptocurrency) {
       fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${cryptocurrency}`)
@@ -45,6 +48,7 @@ const NewTrade = ({ orderType, setOrderType, cryptocurrency, setCryptocurrency, 
     }
   }, [cryptocurrency]);
 
+  // Update total cost based on quantity and current price
   useEffect(() => {
     if (quantity && localPrice) {
       setLocalTotal(quantity * localPrice);
@@ -82,6 +86,7 @@ const NewTrade = ({ orderType, setOrderType, cryptocurrency, setCryptocurrency, 
     }
   };
 
+  // Submit the trade order and update portfolio data
   const handleSubmit = async () => {
     if (quantity && localTotal) {
       const tradeData = {
