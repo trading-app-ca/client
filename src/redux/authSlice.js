@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import ApiManager from '../apimanager/ApiManager';
 
+// Async thunk for fetching user data
 export const fetchUserData = createAsyncThunk(
   'auth/fetchUserData',
   async (_, { getState, rejectWithValue }) => {
@@ -9,7 +10,7 @@ export const fetchUserData = createAsyncThunk(
       const token = state.auth.token || localStorage.getItem('authToken');
       if (!token) throw new Error('No token found');
 
-      const response = await ApiManager.getUserData();
+      const response = await ApiManager.getUserData(); 
       return response;
     } catch (error) {
       return rejectWithValue(error?.response?.data?.msg || error.message || 'An error occurred while fetching user data');
@@ -17,19 +18,22 @@ export const fetchUserData = createAsyncThunk(
   }
 );
 
+// Async thunk for logging in a user
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiManager.login(data);
-      localStorage.setItem('authToken', response.token);
+      localStorage.setItem('authToken', response.token); 
       return response;
     } catch (error) {
+      // Return error message if login fails
       return rejectWithValue(error?.response?.data?.msg || error.message || 'An error occurred during login');
     }
   }
 );
 
+// Async thunk for registering a user
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (data, { rejectWithValue }) => {
@@ -37,11 +41,13 @@ export const registerUser = createAsyncThunk(
       const response = await ApiManager.register(data);
       return response;
     } catch (error) {
+      // Return error message if registration fails
       return rejectWithValue(error?.response?.data?.msg || error.message || 'An error occurred during registration');
     }
   }
 );
 
+// Slice for authentication-related state and reducers
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
@@ -53,12 +59,14 @@ const authSlice = createSlice({
   },
   reducers: {
     logout(state) {
+      // Logout action: clear authentication state and localStorage
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
       localStorage.removeItem('authToken');
     },
     initializeAuth(state) {
+      // Initialise authentication state from localStorage token
       const token = localStorage.getItem('authToken');
       if (token) {
         state.token = token;
@@ -67,6 +75,7 @@ const authSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
+    // Handle async actions and update state based on request lifecycle
     builder
       .addCase(fetchUserData.pending, (state) => {
         state.status = 'loading';

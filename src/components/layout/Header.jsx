@@ -10,21 +10,25 @@ import { usePortfolioData } from '../portfolio/PortfolioValue';
 import LogoutConfirmationModal from '../common/LogoutConfirmationModal';
 
 const Header = () => {
+  // State to manage the mobile menu and logout modal visibility
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // Accessing authentication and user info from Redux state
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { balance } = useSelector((state) => state.depositWithdraw); 
   const { portfolioData, isLoading, error } = usePortfolioData();
 
+  // useEffect to fetch user balance when authenticated
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchUserBalance()); 
     }
   }, [dispatch, isAuthenticated]);
 
+  // Handle logout action
   const handleLogout = () => {
     dispatch(logout());
     navigate('/');
@@ -40,10 +44,12 @@ const Header = () => {
     }, 100);
   };
 
+  // Toggle the mobile menu open/close
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Toggle logout modal
   const openLogoutModal = () => {
     setIsLogoutModalOpen(true);
   };
@@ -52,6 +58,7 @@ const Header = () => {
     setIsLogoutModalOpen(false);
   };
 
+  // Confirm and handle the logout process
   const confirmLogout = () => {
     closeLogoutModal();
     handleLogout();

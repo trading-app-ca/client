@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import ApiManager from '../apimanager/ApiManager';
+import { fetchPortfolioData } from './portfolioSlice';  
 
+// Async thunk to fetch trade history from the API
 export const fetchTradeHistory = createAsyncThunk(
   'trade/fetchTradeHistory',
   async (_, { rejectWithValue }) => {
@@ -16,6 +18,7 @@ export const fetchTradeHistory = createAsyncThunk(
   }
 );
 
+// Async thunk to create a new trade and update portfolio and trade history
 export const createTrade = createAsyncThunk(
   'trade/createTrade',
   async (tradeData, { dispatch, rejectWithValue }) => {
@@ -25,7 +28,8 @@ export const createTrade = createAsyncThunk(
       if (!response || typeof response !== 'object') {
         throw new Error('Trade creation failed');
       }
-      dispatch(fetchTradeHistory());
+      dispatch(fetchPortfolioData()); // Fetch portfolio data after a trade is created
+      dispatch(fetchTradeHistory()); // Refresh trade history after a trade is created
 
       return response; 
     } catch (error) {
@@ -34,6 +38,7 @@ export const createTrade = createAsyncThunk(
   }
 );
 
+// Slice to manage trade state and handle actions
 const tradeSlice = createSlice({
   name: 'trade',
   initialState: {
