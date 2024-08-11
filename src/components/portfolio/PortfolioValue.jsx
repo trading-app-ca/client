@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ApiManager from '../../apimanager/ApiManager';
 
+// Custom hook to fetch portfolio data
 export const usePortfolioData = () => {
   const { token, isAuthenticated } = useSelector((state) => state.auth);
   const [portfolioData, setPortfolioData] = useState({ assets: [], trades: [], portfolioValue: 0, profitLoss: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch portfolio and trades data on component mount or auth state change
   useEffect(() => {
     const fetchPortfolioData = async () => {
       if (isAuthenticated && token) {

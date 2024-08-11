@@ -1,6 +1,5 @@
 let fetchUserData, fetchPortfolioData, fetchTradesData, ApiManager;
 
-// Mocking ApiManager module
 beforeAll(() => {
   global.localStorage = {
     getItem: jest.fn(),

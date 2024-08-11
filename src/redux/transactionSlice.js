@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import ApiManager from '../apimanager/ApiManager';
 
+// Async thunk to fetch transaction data from the API
 export const fetchTransactions = createAsyncThunk(
   'transaction/fetchTransactions',
   async (_, { rejectWithValue }) => {
@@ -27,6 +28,7 @@ export const fetchTransactions = createAsyncThunk(
   }
 );
 
+// Slice to manage transaction state and handle actions
 const transactionSlice = createSlice({
   name: 'transaction',
   initialState: {
@@ -38,24 +40,24 @@ const transactionSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTransactions.pending, (state) => {
-        console.log('Fetching transactions - pending');
-        state.isLoading = true;
-        state.error = null;
-        state.noDataFound = false;
-      })
-      .addCase(fetchTransactions.fulfilled, (state, action) => {
-        console.log('Fetching transactions - fulfilled');
-        state.isLoading = false;
-        state.transactions = action.payload;
-      })
-      .addCase(fetchTransactions.rejected, (state, action) => {
-        console.error('Fetching transactions - rejected:', action.payload);
-        state.isLoading = false;
-        state.error = action.payload;
-        state.noDataFound = action.payload === 'No transactions found.'; 
-      });
-  },
+    .addCase(fetchTransactions.pending, (state) => {
+      console.log('Fetching transactions - pending');
+      state.isLoading = true;
+      state.error = null;
+      state.noDataFound = false;
+    })
+    .addCase(fetchTransactions.fulfilled, (state, action) => {
+      console.log('Fetching transactions - fulfilled');
+      state.isLoading = false;
+      state.transactions = action.payload;
+    })
+    .addCase(fetchTransactions.rejected, (state, action) => {
+      console.error('Fetching transactions - rejected:', action.payload);
+      state.isLoading = false;
+      state.error = action.payload;
+      state.noDataFound = action.payload === 'No transactions found.'; 
+    });
+},
 });
 
 export default transactionSlice.reducer;

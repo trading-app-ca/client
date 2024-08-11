@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import ApiManager from '../apimanager/ApiManager';
 
+// Async thunk to fetch the user's current balance
 export const fetchUserBalance = createAsyncThunk('depositWithdraw/fetchUserBalance', async () => {
   const userData = await ApiManager.getUserData();
   return userData.balance;
 });
 
+// Async thunk to handle depositing funds
 export const depositFunds = createAsyncThunk('depositWithdraw/depositFunds', async (amount, { dispatch, rejectWithValue }) => {
   try {
     await ApiManager.depositFunds(amount); 
@@ -17,6 +19,7 @@ export const depositFunds = createAsyncThunk('depositWithdraw/depositFunds', asy
   }
 });
 
+// Async thunk to handle withdrawing funds
 export const withdrawFunds = createAsyncThunk('depositWithdraw/withdrawFunds', async (amount, { dispatch, rejectWithValue }) => {
   try {
     await ApiManager.withdrawFunds(amount); 
@@ -28,6 +31,7 @@ export const withdrawFunds = createAsyncThunk('depositWithdraw/withdrawFunds', a
   }
 });
 
+// Redux slice to manage deposit and withdrawal state
 const depositWithdrawSlice = createSlice({
   name: 'depositWithdraw',
   initialState: { balance: 0, status: 'idle', error: null },

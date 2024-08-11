@@ -1,68 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import ApiManager from '../apimanager/ApiManager';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchTransactions } from '../redux/transactionSlice';
+import { fetchTradeHistory } from '../redux/tradeSlice';
 import Card from './common/Card';
 
+// Component to display recent transactions and trades
 const RecentActivityCard = () => {
-  const [transactions, setTransactions] = useState([]);
-  const [trades, setTrades] = useState([]);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { transactions, isLoading: isLoadingTransactions, error: transactionsError } = useSelector((state) => state.transaction);
+  const { trades, isLoading: isLoadingTrades, error: tradesError } = useSelector((state) => state.trade);
 
-  const token = useSelector((state) => state.auth.token);
-
+  // Fetch transactions and trades on component mount
   useEffect(() => {
-    const fetchActivityData = async () => {
-      try {
-        const transactionsResponse = await ApiManager.getTransactionsData();
-        const tradesResponse = await ApiManager.getTradesData();
+    dispatch(fetchTransactions());
+    dispatch(fetchTradeHistory());
+  }, [dispatch]);
 
-        if (Array.isArray(transactionsResponse)) {
-          setTransactions(transactionsResponse);
-        } else {
-          setTransactions([]);
-          console.error('Transactions response is not an array:', transactionsResponse);
-        }
-
-        if (Array.isArray(tradesResponse)) {
-          setTrades(tradesResponse);
-        } else if (tradesResponse?.msg === 'No trades found') {
-          setTrades([]);
-        } else {
-          setTrades([]);
-          console.error('Trades response is not an array:', tradesResponse);
-        }
-      } catch (error) {
-        console.error('Error fetching recent activity:', error);
-        setError('Failed to load recent activity.');
-      }
-    };
-
-    fetchActivityData();
-  }, [token]);
-
-  const mappedTransactions = Array.isArray(transactions) ? transactions.map(tx => ({
+  const mappedTransactions = transactions.map(tx => ({
     date: new Date(tx.date),
     type: tx.type,
     amount: tx.amount,
-    asset: null
-  })) : [];
+    asset: null,
+  }));
 
-  const mappedTrades = Array.isArray(trades) ? trades.map(trade => ({
+  const mappedTrades = trades.map(trade => ({
     date: new Date(trade.date),
     type: trade.type === 'buy' ? 'Buy' : 'Sell',
     amount: trade.quantity * trade.price,
-    asset: trade.asset
-  })) : [];
+    asset: trade.asset,
+  }));
 
   const recentActivity = [
     ...mappedTransactions,
-    ...mappedTrades
+    ...mappedTrades,
   ].sort((a, b) => b.date - a.date).slice(0, 4);
+
+  const isLoading = isLoadingTransactions || isLoadingTrades;
+  const error = transactionsError || tradesError;
 
   return (
     <Card title="Recent Activity" className="transaction-details">
       {error ? (
         <p>{error}</p>
+      ) : isLoading ? (
+        <p>Loading...</p>
       ) : recentActivity.length > 0 ? (
         recentActivity.map((activity, index) => (
           <div key={index}>
